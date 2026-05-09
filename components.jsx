@@ -313,12 +313,20 @@ function WatchSection() {
 const SHEET_URL = "https://script.google.com/macros/s/AKfycbyepLsFHo8vdsoma0CEkHJ5yveH_-FrZ46Dm4-cmVm0qWEhyDBN1GO9iBzfi7ULed3_/exec";
 // ─────────────────────────────────────────────────────────────────────────────
 
+function genDiscountCode() {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let c = "YC-";
+  for (let i = 0; i < 6; i++) c += chars[Math.floor(Math.random() * chars.length)];
+  return c;
+}
+
 function SignupModal() {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [status, setStatus] = useState("idle"); // idle | submitting | done
+  const [code, setCode] = useState("");
 
   useEffect(() => {
     if (localStorage.getItem("yc_signup_seen")) return;
@@ -334,38 +342,47 @@ function SignupModal() {
   const submit = (e) => {
     e.preventDefault();
     if (!email) return;
+    const discountCode = genDiscountCode();
+    setCode(discountCode);
     setStatus("submitting");
     fetch(SHEET_URL, {
       method: "POST",
       mode: "no-cors",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, phone, date: new Date().toISOString() }),
+      body: JSON.stringify({ name, email, phone, code: discountCode, date: new Date().toISOString() }),
     }).finally(() => {
       setStatus("done");
       localStorage.setItem("yc_signup_seen", "1");
-      setTimeout(() => setOpen(false), 2200);
     });
   };
 
   if (!open) return null;
 
   return (
-    <div className="signup-overlay" onClick={dismiss}>
+    <div className="signup-overlay" onClick={status === "done" ? null : dismiss}>
       <div className="signup-modal" onClick={(e) => e.stopPropagation()}>
-        <button className="signup-close" onClick={dismiss} aria-label="Close">✕</button>
+        {status !== "done" && (
+          <button className="signup-close" onClick={dismiss} aria-label="Close">✕</button>
+        )}
 
         {status === "done" ? (
           <div className="signup-done">
             <span className="signup-done-word">yur in.</span>
             <p>We'll hit you when something drops.</p>
+            <div className="signup-code-block">
+              <p className="signup-code-label">10% off your first order in the shop</p>
+              <div className="signup-code">{code}</div>
+              <p className="signup-code-note">Copy this code — use it at checkout. One time use.</p>
+            </div>
+            <button className="signup-submit" style={{marginTop: 24}} onClick={dismiss}>Close</button>
           </div>
         ) : (
           <>
             <div className="signup-header">
               <span className="signup-logo">yur cooked<span className="signup-dot">.</span></span>
             </div>
-            <h2 className="signup-heading">Yur first<br/><span className="it">to know.</span></h2>
-            <p className="signup-body">New drops, pop-ups, private dinners, and recipes before anyone else. No spam — just the good stuff.</p>
+            <h2 className="signup-heading">Yur first<br/>to know.</h2>
+            <p className="signup-body">New drops, pop-ups, private dinners, and recipes before anyone else. Sign up and get 10% off your first shop order.</p>
             <form className="signup-form" onSubmit={submit}>
               <input
                 className="signup-input"

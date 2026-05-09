@@ -1880,9 +1880,10 @@ button { font-family: inherit; cursor: pointer; }
 .signup-logo {
   font-family: "Caveat", cursive;
   font-weight: 700;
-  font-size: 26px;
+  font-size: 42px;
   color: var(--ink);
   filter: url(#hand);
+  line-height: 1;
 }
 .signup-dot {
   display: inline-block;
@@ -1894,12 +1895,13 @@ button { font-family: inherit; cursor: pointer; }
   vertical-align: middle;
 }
 .signup-heading {
-  font-family: var(--serif);
-  font-size: clamp(36px, 6vw, 52px);
-  font-weight: 400;
+  font-family: var(--sans);
+  font-size: clamp(32px, 5vw, 46px);
+  font-weight: 800;
   line-height: 1.05;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
   margin: 0 0 16px;
+  text-transform: none;
 }
 .signup-body {
   font-size: 14px;
@@ -1966,5 +1968,32 @@ button { font-family: inherit; cursor: pointer; }
 .signup-done p {
   color: var(--muted);
   font-size: 14px;
-  margin: 0;
+  margin: 0 0 8px;
+}
+.signup-code-block {
+  margin-top: 24px;
+  border: 1px solid var(--rule);
+  padding: 20px;
+  background: var(--cream-2);
+}
+.signup-code-label {
+  font-size: 11px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 10px !important;
+}
+.signup-code {
+  font-family: var(--sans);
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: .12em;
+  color: var(--ink);
+  margin: 4px 0 10px;
+}
+.signup-code-note {
+  font-size: 11px;
+  color: var(--muted);
+  margin: 0 !important;
+  letter-spacing: .03em;
 }
