@@ -793,11 +793,12 @@ function AboutPage({ setPage }) {
             <div style={{ marginTop: 12, fontFamily: "var(--serif)", fontStyle: "italic", fontSize: 28, textTransform: "none", letterSpacing: "-0.01em", color: "var(--ink)" }}>I.</div>
           </aside>
           <div className="col-body">
-            <p>It wasn't a passion thing at first. It was a logistics thing. My mom went back to school to become a teacher, my sisters and I were home, and somebody had to make dinner. So we figured it out.</p>
-            <p>I leaned hard on YouTube and old cookbooks — that part's still true, it's how I learn most of what I make. Burnt rice, oversalted everything, the works. Eventually I made an omelette I actually liked and something clicked.</p>
-            <p>Then high school happened. My friends and I would smoke, get hungry, and I'd just <span className="pull">start cooking for everyone.</span> They couldn't believe it was good. My family loved my food, I loved theirs back, and the more I watched people get happy from a plate I'd put down, the more I knew this was the thing.</p>
-            <p>In 2022 my friends finally talked me into posting it online. Now there are private dinners, a few hundred thousand of you watching, and whatever else feels right next.</p>
-            <p>This site's the home for all of it. Less feed, more shelf.</p>
+            <p>Growing up in Houston, I learned to cook out of necessity. My mom became a teacher, so me and my sisters figured it out. Late dinners or cook yourself — that was the deal. I chose cook.</p>
+            <p>Then my friends and I started smoking weed, and suddenly nobody wanted Taco Bell. They wanted whatever I was making. That was Houston, freshman year of high school. That's where it started.</p>
+            <p>I went to college, dropped out after two years, moved back home, then packed up and moved to Boulder, Colorado. Three of my friends convinced me to start posting my food online. So I did what I always did — hit the Puffco, started cooking, pointed a camera at it. People watched. Then <span className="pull">a lot of people watched.</span></p>
+            <p>TikTok deleted my account. Hurt like hell. I moved to Instagram, went viral a couple times, built it back up almost to where it was. Met Troy, made some of the best content of my life. Getting banned on TikTok genuinely changed everything — I think it was supposed to happen.</p>
+            <p>I started cycling in Colorado, traveled to New York a few times, and knew immediately I had to live there. Signed a sublease, moved in August 2025. Best decision I've made. I did more private dinners in a few months than I had in years. New York cracked something back open in me that had gone quiet in Boulder.</p>
+            <p>Now I'm here. Pop-ups planned for 2026 and 2027. An apron and knife roll dropping soon. Chef pants eventually. A bike ride across Europe somewhere in there. And a lot more food for a lot more people — because that's the whole point.</p>
           </div>
         </div>
       </section>
