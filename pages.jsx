@@ -80,15 +80,15 @@ function HomePage({ setPage }) {
               <img src="images/recipe-preview-bg.jpg" alt="Recipes" style={{width:"100%",height:"100%",objectFit:"cover",display:"block",filter:"blur(6px)",transform:"scale(1.08)"}}/>
             </div>
             <div className="preview-meta">
-              <h3 className="preview-name">The <span className="it">Recipes</span></h3>
+              <h3 className="preview-name">The <span className="it">Recipe Stash</span></h3>
               <span className="preview-num">01 / 03</span>
             </div>
             <p className="preview-desc">31 recipes I cook on repeat. Free to read. Reads more like a cookbook than a blog.</p>
             <span className="preview-cta">See the Recipes <Icon.arrow/></span>
           </a>
           <a href="#" onClick={go("shop")} className="preview">
-            <div className="preview-img">
-              <image-slot id="prev-shop" placeholder="Apron / goods flat lay"></image-slot>
+            <div className="preview-img coming-soon-img">
+              <span className="coming-soon-text">coming<br/>soon.</span>
             </div>
             <div className="preview-meta">
               <h3 className="preview-name">The <span className="it">Goods</span></h3>
@@ -98,8 +98,8 @@ function HomePage({ setPage }) {
             <span className="preview-cta">Shop Now <Icon.arrow/></span>
           </a>
           <a href="#" onClick={go("about")} className="preview">
-            <div className="preview-img">
-              <image-slot id="prev-about" placeholder="Portrait — Clint at the stove"></image-slot>
+            <div className="preview-img coming-soon-img">
+              <span className="coming-soon-text">coming<br/>soon.</span>
             </div>
             <div className="preview-meta">
               <h3 className="preview-name">The <span className="it">Story</span></h3>
@@ -554,7 +554,7 @@ function RecipeBookPage({ setPage }) {
           <p className="book-desc">A growing notebook of the dishes I make on repeat — pulled straight from my kitchen, my Instagram saves, and the dinners my friends won't stop asking about. Free to read, written like a cookbook.</p>
           <div className="cluster">
             <a href="#recipes" className="btn">Browse Recipes <Icon.arrowLg className="arrow"/></a>
-            <a href="#" onClick={(e) => { e.preventDefault(); setPage && setPage("contact"); }} className="btn ghost">Cook with me</a>
+            <a href="#" onClick={(e) => { e.preventDefault(); setPage && setPage("subscribe"); }} className="btn ghost">Subscribe — from $3.99/mo</a>
           </div>
           <div className="book-stats">
             <div className="stat"><span className="num">31</span><span className="lbl">Recipes</span></div>
@@ -901,4 +901,109 @@ function ContactPage() {
   );
 }
 
-Object.assign(window, { HomePage, RecipeBookPage, ShopPage, AboutPage, ContactPage });
+// ─── STRIPE PAYMENT LINKS ────────────────────────────────────────────────────
+// Paste your Stripe Payment Link URLs here once created
+const STRIPE_MONTHLY = "https://buy.stripe.com/REPLACE_MONTHLY";
+const STRIPE_ANNUAL  = "https://buy.stripe.com/REPLACE_ANNUAL";
+// ─────────────────────────────────────────────────────────────────────────────
+
+function SubscribePage({ setPage }) {
+  const [hover, setHover] = useStateP(null);
+  return (
+    <div className="page">
+
+      {/* Hero */}
+      <section className="sub-hero">
+        <div className="sub-hero-inner">
+          <div className="eyebrow"><span className="dot"></span>The Recipe Stash</div>
+          <h1 className="sub-heading">Cook like yur<br/><span className="it">in on it.</span></h1>
+          <p className="sub-lede">Every recipe. Every technique. Every note from the kitchen — unlocked and readable like a real cookbook, not a blog.</p>
+        </div>
+      </section>
+
+      {/* Pricing cards */}
+      <section className="sub-pricing">
+        <div className="sub-cards">
+
+          {/* Monthly */}
+          <div className={"sub-card" + (hover === "monthly" ? " sub-card--hover" : "")}
+            onMouseEnter={() => setHover("monthly")} onMouseLeave={() => setHover(null)}>
+            <div className="sub-card-top">
+              <span className="sub-plan">Monthly</span>
+            </div>
+            <div className="sub-price">
+              <span className="sub-amount">$7.99</span>
+              <span className="sub-period">/ month</span>
+            </div>
+            <ul className="sub-features">
+              <li>Full access to every recipe</li>
+              <li>New recipes added regularly</li>
+              <li>Ingredients, method & plating notes</li>
+              <li>Cancel anytime</li>
+            </ul>
+            <a href={STRIPE_MONTHLY} className="sub-btn sub-btn--outline">Get Monthly</a>
+          </div>
+
+          {/* Annual */}
+          <div className={"sub-card sub-card--featured" + (hover === "annual" ? " sub-card--hover" : "")}
+            onMouseEnter={() => setHover("annual")} onMouseLeave={() => setHover(null)}>
+            <div className="sub-card-top">
+              <span className="sub-plan">Annual</span>
+              <span className="sub-badge">50% off</span>
+            </div>
+            <div className="sub-price">
+              <span className="sub-amount">$47.94</span>
+              <span className="sub-period">/ year</span>
+            </div>
+            <div className="sub-monthly-eq">$3.99 / month — best value</div>
+            <ul className="sub-features">
+              <li>Everything in Monthly</li>
+              <li>50% savings vs monthly</li>
+              <li>Priority access to new drops</li>
+              <li>Lock in yur rate forever</li>
+            </ul>
+            <a href={STRIPE_ANNUAL} className="sub-btn sub-btn--filled">Get Annual</a>
+          </div>
+
+        </div>
+
+        <p className="sub-fine">Billed securely through Stripe. Cancel anytime — no questions asked.</p>
+      </section>
+
+      {/* What's inside */}
+      <section className="sub-inside">
+        <div className="sub-inside-inner">
+          <h2 className="section-title">What's <span className="it">inside.</span></h2>
+          <div className="sub-grid">
+            <div className="sub-item">
+              <span className="sub-item-num">10+</span>
+              <span className="sub-item-label">Recipes live now</span>
+            </div>
+            <div className="sub-item">
+              <span className="sub-item-num">Vol. 01</span>
+              <span className="sub-item-label">Working notebook</span>
+            </div>
+            <div className="sub-item">
+              <span className="sub-item-num">Free</span>
+              <span className="sub-item-label">To cancel anytime</span>
+            </div>
+            <div className="sub-item">
+              <span className="sub-item-num">Real</span>
+              <span className="sub-item-label">Recipes I actually cook</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Back */}
+      <section style={{ padding: "40px var(--gutter)", borderTop: "1px solid var(--rule)" }}>
+        <button className="btn-ghost" onClick={() => setPage("recipe")} style={{ display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", cursor: "pointer", color: "var(--ink)", fontSize: 14, letterSpacing: ".06em", textTransform: "uppercase" }}>
+          ← Back to Recipe Stash
+        </button>
+      </section>
+
+    </div>
+  );
+}
+
+Object.assign(window, { HomePage, RecipeBookPage, ShopPage, AboutPage, ContactPage, SubscribePage });
