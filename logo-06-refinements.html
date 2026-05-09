@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>yur cooked. — № 06 Refinements</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Homemade+Apple&family=Shadows+Into+Light&family=Permanent+Marker&family=Space+Mono:wght@400;700&family=Archivo:wght@400;500;700&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --cream: #efe9dd;
+  --paper: #f4efe6;
+  --ink: #14110d;
+  --muted: #6b6358;
+  --rule: #d8cfbe;
+  --accent: #b8442a;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: "Archivo", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+.wrap { max-width: 1280px; margin: 0 auto; padding: 56px clamp(20px, 4vw, 56px) 120px; }
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 24px;
+  margin-bottom: 56px;
+}
+.head h1 {
+  font-family: "Archivo", sans-serif;
+  font-weight: 700;
+  font-size: clamp(28px, 4vw, 48px);
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  margin: 0;
+  line-height: 0.95;
+}
+.head h1 em {
+  font-family: "Caveat", cursive;
+  font-style: normal;
+  font-weight: 700;
+  text-transform: none;
+  font-size: 1.4em;
+  line-height: 0.8;
+  vertical-align: -0.05em;
+}
+.head .meta {
+  font-family: "Space Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: right;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+}
+@media (min-width: 720px) { .grid { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 1080px) { .grid { grid-template-columns: 1fr 1fr; } }
+
+.card {
+  border: 1px solid var(--rule);
+  background: var(--paper);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+.card-tag {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  font-family: "Space Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  z-index: 2;
+}
+.stage {
+  aspect-ratio: 16/10;
+  display: grid;
+  place-items: center;
+  padding: 40px;
+  position: relative;
+  overflow: hidden;
+}
+.stage.dark { background: var(--ink); color: var(--cream); }
+.stage.accent { background: var(--accent); color: var(--paper); }
+.foot {
+  border-top: 1px solid var(--rule);
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.foot .name {
+  font-family: "Archivo", sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: -0.005em;
+}
+.foot .desc {
+  font-family: "Space Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: right;
+  max-width: 60%;
+}
+
+.paper-noise {
+  position: absolute; inset: 0; pointer-events: none;
+  opacity: 0.5; mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .15 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+.stage.dark .paper-noise { opacity: 0.4; mix-blend-mode: overlay; }
+.stage.accent .paper-noise { opacity: 0.55; mix-blend-mode: multiply; }
+
+/* ============================================================
+   A — Pure Caveat, single line, low underline
+   ============================================================ */
+.A {
+  position: relative; z-index: 1; text-align: center;
+  font-family: "Caveat", cursive;
+  font-weight: 700;
+  font-size: clamp(72px, 9vw, 120px);
+  letter-spacing: -0.01em;
+  line-height: 0.95;
+  filter: url(#hand);
+}
+.A .stroke {
+  display: block;
+  width: 78%;
+  height: 4px;
+  background: currentColor;
+  margin: -6px auto 0;
+  border-radius: 100px;
+  filter: url(#hand-rough);
+  transform: rotate(-1deg);
+}
+
+/* ============================================================
+   B — Permanent Marker, thicker, slightly slanted, no underline
+   ============================================================ */
+.B {
+  position: relative; z-index: 1; text-align: center;
+  font-family: "Permanent Marker", cursive;
+  font-size: clamp(56px, 7vw, 84px);
+  letter-spacing: -0.005em;
+  line-height: 0.95;
+  transform: rotate(-2deg);
+  filter: url(#hand-fine);
+}
+
+/* ============================================================
+   C — Caveat with monospace tagline lockup
+   ============================================================ */
+.C {
+  position: relative; z-index: 1; text-align: center;
+  display: flex; flex-direction: column; align-items: center; gap: 0;
+}
+.C .word {
+  font-family: "Caveat", cursive;
+  font-weight: 700;
+  font-size: clamp(64px, 8vw, 100px);
+  line-height: 0.95;
+  letter-spacing: -0.01em;
+  filter: url(#hand);
+  margin-bottom: -4px;
+}
+.C .rule {
+  width: 60%;
+  height: 2px;
+  background: currentColor;
+  margin: 6px 0 10px;
+  filter: url(#hand-rough);
+}
+.C .tag {
+  font-family: "Space Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 0.34em;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+/* ============================================================
+   D — Two-line layered: marker + script, NYC vibe
+   ============================================================ */
+.D {
+  position: relative; z-index: 1; text-align: center;
+  font-family: "Caveat", cursive;
+  font-weight: 700;
+  font-size: clamp(80px, 10vw, 132px);
+  line-height: 0.78;
+  letter-spacing: -0.015em;
+  filter: url(#hand);
+}
+.D .yur { display: block; transform: translateX(-12%) rotate(-2deg); }
+.D .cooked { display: block; transform: translateX(8%) rotate(1deg); margin-top: -0.18em; }
+
+/* ============================================================
+   E — Compact horizontal mark for nav / favicon
+   ============================================================ */
+.E {
+  position: relative; z-index: 1;
+  font-family: "Caveat", cursive;
+  font-weight: 700;
+  font-size: clamp(40px, 5vw, 56px);
+  letter-spacing: -0.005em;
+  line-height: 1;
+  filter: url(#hand);
+  display: inline-flex;
+  align-items: baseline;
+}
+
+/* ============================================================
+   F — Stamped + script: small caps frame around the script
+   ============================================================ */
+.F {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  padding: 18px 28px;
+  border: 2px solid currentColor;
+  filter: url(#hand-rough);
+  transform: rotate(-1.5deg);
+}
+.F .top, .F .bot {
+  font-family: "Space Mono", monospace;
+  font-size: 9px;
+  letter-spacing: 0.32em;
+  font-weight: 700;
+}
+.F .word {
+  font-family: "Caveat", cursive;
+  font-weight: 700;
+  font-size: clamp(54px, 7vw, 84px);
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+}
+
+.note {
+  margin-top: 56px;
+  border-top: 1px solid var(--rule);
+  padding-top: 32px;
+  font-family: "Space Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <filter id="hand" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025 0.06" numOctaves="2" seed="5"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.6"/>
+    </filter>
+    <filter id="hand-fine" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="1" seed="9"/>
+      <feDisplacementMap in="SourceGraphic" scale="0.7"/>
+    </filter>
+    <filter id="hand-rough" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" seed="11"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+  </defs>
+</svg>
+
+<div class="wrap">
+
+  <header class="head">
+    <h1>№ 06 — <em>refinements</em></h1>
+    <div class="meta">
+      Sharpie Signature · 6 cuts<br/>
+      Cream / Ink / Ember
+    </div>
+  </header>
+
+  <div class="grid">
+
+    <div class="card">
+      <span class="card-tag">06.A · Recommend</span>
+      <div class="stage">
+        <div class="paper-noise"></div>
+        <div class="A">yur cooked.<span class="stroke"></span></div>
+      </div>
+      <div class="stage dark">
+        <div class="paper-noise"></div>
+        <div class="A">yur cooked.<span class="stroke"></span></div>
+      </div>
+      <div class="foot">
+        <span class="name">06.A — Sharpie + Underline</span>
+        <span class="desc">Caveat 700 · Hand-roughed stroke</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="card-tag">06.B</span>
+      <div class="stage">
+        <div class="paper-noise"></div>
+        <div class="B">yur cooked.</div>
+      </div>
+      <div class="stage dark">
+        <div class="paper-noise"></div>
+        <div class="B">yur cooked.</div>
+      </div>
+      <div class="foot">
+        <span class="name">06.B — Marker</span>
+        <span class="desc">Permanent Marker · Tilted, no underline</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="card-tag">06.C</span>
+      <div class="stage">
+        <div class="paper-noise"></div>
+        <div class="C">
+          <span class="word">yur cooked.</span>
+          <span class="rule"></span>
+          <span class="tag">small batch · nyc</span>
+        </div>
+      </div>
+      <div class="stage dark">
+        <div class="paper-noise"></div>
+        <div class="C">
+          <span class="word">yur cooked.</span>
+          <span class="rule"></span>
+          <span class="tag">small batch · nyc</span>
+        </div>
+      </div>
+      <div class="foot">
+        <span class="name">06.C — Lockup</span>
+        <span class="desc">Script + mono tagline</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="card-tag">06.D</span>
+      <div class="stage">
+        <div class="paper-noise"></div>
+        <div class="D">
+          <span class="yur">yur</span>
+          <span class="cooked">cooked.</span>
+        </div>
+      </div>
+      <div class="stage accent">
+        <div class="paper-noise"></div>
+        <div class="D">
+          <span class="yur">yur</span>
+          <span class="cooked">cooked.</span>
+        </div>
+      </div>
+      <div class="foot">
+        <span class="name">06.D — Two-line Tag</span>
+        <span class="desc">Wall-stencil arrangement</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="card-tag">06.E</span>
+      <div class="stage">
+        <div class="paper-noise"></div>
+        <div class="E">yur cooked.</div>
+      </div>
+      <div class="stage dark">
+        <div class="paper-noise"></div>
+        <div class="E">yur cooked.</div>
+      </div>
+      <div class="foot">
+        <span class="name">06.E — Compact</span>
+        <span class="desc">Nav lockup / business card scale</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="card-tag">06.F</span>
+      <div class="stage">
+        <div class="paper-noise"></div>
+        <div class="F">
+          <span class="top">— EST 2023 —</span>
+          <span class="word">yur cooked.</span>
+          <span class="bot">— NEW YORK CITY —</span>
+        </div>
+      </div>
+      <div class="stage dark">
+        <div class="paper-noise"></div>
+        <div class="F">
+          <span class="top">— EST 2023 —</span>
+          <span class="word">yur cooked.</span>
+          <span class="bot">— NEW YORK CITY —</span>
+        </div>
+      </div>
+      <div class="foot">
+        <span class="name">06.F — Stamped Script</span>
+        <span class="desc">Boxed frame · jacket-tag energy</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="note">
+    <span>06.A is the workhorse · 06.E for nav · 06.F for packaging / merch tags</span>
+    <span>Tell me which letter to push further</span>
+  </div>
+
+</div>
+
+</body>
+</html>

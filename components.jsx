@@ -1,0 +1,311 @@
+/* global React */
+const { useState, useEffect, useRef } = React;
+
+/* ============ Icons ============ */
+const Icon = {
+  arrow: (p) => (
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" {...p}>
+      <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  ),
+  arrowLg: (p) => (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" {...p}>
+      <path d="M3 10h14M12 4l5 6-5 6" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  ),
+  ig: (p) => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" {...p}>
+      <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" strokeWidth="1.6"/>
+      <circle cx="12" cy="12" r="3.6" stroke="currentColor" strokeWidth="1.6"/>
+      <circle cx="17.2" cy="6.8" r="1" fill="currentColor"/>
+    </svg>
+  ),
+  yt: (p) => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" {...p}>
+      <rect x="2" y="5" width="20" height="14" rx="3" stroke="currentColor" strokeWidth="1.6"/>
+      <path d="M10 9.5v5l4.5-2.5L10 9.5z" fill="currentColor"/>
+    </svg>
+  ),
+  tt: (p) => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" {...p}>
+      <path d="M14 4v10.5a3.5 3.5 0 1 1-3.5-3.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
+      <path d="M14 4c.5 2.5 2.5 4.5 5 4.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
+    </svg>
+  ),
+  close: (p) => (
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" {...p}>
+      <path d="M3 3l8 8M11 3l-8 8" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+    </svg>
+  ),
+};
+
+/* ============ Nav ============ */
+function Nav({ page, setPage }) {
+  const [open, setOpen] = useState(false);
+  useEffect(() => { setOpen(false); }, [page]);
+  const links = [
+    ["recipe", "Recipes"],
+    ["shop", "Shop"],
+    ["about", "About"],
+    ["contact", "Contact"],
+  ];
+  const go = (p) => (e) => { e.preventDefault(); setPage(p); window.scrollTo({ top: 0, behavior: "instant" }); };
+  return (
+    <>
+      <header className="nav">
+        <div className="container nav-row">
+          <a href="#" onClick={go("home")} className="logo">
+            yur cooked.
+          </a>
+          <nav className="nav-links">
+            {links.map(([k, l]) => (
+              <a key={k} href="#" onClick={go(k)} className={"nav-link" + (page === k ? " active" : "")}>{l}</a>
+            ))}
+          </nav>
+          <button className={"nav-burger" + (open ? " open" : "")} onClick={() => setOpen(!open)} aria-label="Menu">
+            <span></span><span></span>
+          </button>
+        </div>
+      </header>
+      <div className={"mobile-menu" + (open ? " open" : "")}>
+        <a href="#" onClick={go("home")} className="nav-link">Home</a>
+        {links.map(([k, l]) => (
+          <a key={k} href="#" onClick={go(k)} className="nav-link">{l}</a>
+        ))}
+        <div className="mobile-menu-foot">
+          <a href="#">Instagram</a>
+          <a href="#">YouTube</a>
+          <a href="#">TikTok</a>
+        </div>
+      </div>
+    </>
+  );
+}
+
+/* ============ Footer ============ */
+function Footer({ setPage }) {
+  const go = (p) => (e) => { e.preventDefault(); setPage(p); window.scrollTo({ top: 0, behavior: "instant" }); };
+  return (
+    <footer className="footer">
+      <div className="container">
+        <div className="footer-grid">
+          <div>
+            <div className="footer-mark">yur cooked.</div>
+            <p className="footer-tag">Recipes, goods, and the art of eating well — from a kitchen in New York.</p>
+            <div className="cluster" style={{ marginTop: 24 }}>
+              <a href="#" className="social-bar" style={{ display: "inline-flex" }}>
+                <Icon.ig /> @clintyurr
+              </a>
+            </div>
+          </div>
+          <div>
+            <h4>Explore</h4>
+            <ul>
+              <li><a href="#" onClick={go("recipe")}>Recipes</a></li>
+              <li><a href="#" onClick={go("shop")}>Shop</a></li>
+              <li><a href="#" onClick={go("about")}>About</a></li>
+              <li><a href="#" onClick={go("contact")}>Contact</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Follow</h4>
+            <ul>
+              <li><a href="#"><span style={{display:"inline-flex",gap:8,alignItems:"center"}}><Icon.ig/> Instagram</span></a></li>
+              <li><a href="#"><span style={{display:"inline-flex",gap:8,alignItems:"center"}}><Icon.yt/> YouTube</span></a></li>
+              <li><a href="#"><span style={{display:"inline-flex",gap:8,alignItems:"center"}}><Icon.tt/> TikTok</span></a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Inquiries</h4>
+            <ul>
+              <li><a href="#" onClick={go("contact")}>Private Chef</a></li>
+              <li><a href="#" onClick={go("contact")}>Brand Collaborations</a></li>
+              <li><a href="#" onClick={go("contact")}>Press</a></li>
+            </ul>
+          </div>
+        </div>
+        <div className="footer-bot">
+          <span>© {new Date().getFullYear()} yur cooked. All rights reserved.</span>
+          <span>New York, NY</span>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+/* ============ Ticker ============ */
+function Ticker({ items }) {
+  const content = (
+    <>
+      {items.map((t, i) => (
+        <React.Fragment key={i}>
+          <span className={i % 2 ? "it" : ""}>{t}</span>
+          <span className="sep"></span>
+        </React.Fragment>
+      ))}
+    </>
+  );
+  return (
+    <div className="ticker">
+      <div className="ticker-track">
+        {content}{content}
+      </div>
+    </div>
+  );
+}
+
+/* ============ Promo bar ============ */
+function PromoBar({ onClose }) {
+  return (
+    <div className="promo">
+      <div className="container promo-row">
+        <span className="promo-spacer"></span>
+        <div className="promo-msg">
+          <span className="promo-eyebrow">Limited</span>
+          <span className="promo-text">
+            Unlock <strong>50% off for a year</strong> when you subscribe now
+          </span>
+          <a href="#" className="promo-cta">Subscribe <Icon.arrow/></a>
+        </div>
+        <button className="promo-close" onClick={onClose} aria-label="Dismiss">
+          <Icon.close/>
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/* ============ Watch / YouTube section ============ */
+// Channel: @ClintYur — UCk87vy9lWNcu-vng4vF2WQA
+const CLINT_CHANNEL_ID = "UCk87vy9lWNcu-vng4vF2WQA";
+const FALLBACK_VIDEOS = [
+  { id: "fb1", title: "Latest from @ClintYur", date: "Watch on YouTube", videoId: null, thumb: null, link: "https://youtube.com/@ClintYur" },
+  { id: "fb2", title: "Latest from @ClintYur", date: "Watch on YouTube", videoId: null, thumb: null, link: "https://youtube.com/@ClintYur" },
+  { id: "fb3", title: "Latest from @ClintYur", date: "Watch on YouTube", videoId: null, thumb: null, link: "https://youtube.com/@ClintYur" },
+  { id: "fb4", title: "Latest from @ClintYur", date: "Watch on YouTube", videoId: null, thumb: null, link: "https://youtube.com/@ClintYur" },
+];
+
+function fmtDate(s) {
+  try {
+    const d = new Date(s);
+    const now = Date.now();
+    const diff = (now - d.getTime()) / 1000;
+    if (diff < 60 * 60 * 24 * 2) return "1 day ago";
+    if (diff < 60 * 60 * 24 * 14) return Math.round(diff / 86400) + " days ago";
+    if (diff < 60 * 60 * 24 * 60) return Math.round(diff / (86400 * 7)) + " weeks ago";
+    if (diff < 60 * 60 * 24 * 365) return Math.round(diff / (86400 * 30)) + " months ago";
+    return d.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+  } catch (e) { return ""; }
+}
+
+function WatchSection() {
+  const [active, setActive] = React.useState(null);
+  const [videos, setVideos] = React.useState(FALLBACK_VIDEOS);
+  const [status, setStatus] = React.useState("loading"); // loading | live | fallback
+  const open = (v) => { if (v.videoId) setActive(v); else if (v.link) window.open(v.link, "_blank", "noopener,noreferrer"); };
+  const close = () => setActive(null);
+
+  React.useEffect(() => {
+    let cancelled = false;
+    const rss = `https://www.youtube.com/feeds/videos.xml?channel_id=${CLINT_CHANNEL_ID}`;
+    const url = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rss)}`;
+    fetch(url)
+      .then((r) => r.ok ? r.json() : Promise.reject(r.status))
+      .then((data) => {
+        if (cancelled) return;
+        if (!data || !data.items || !data.items.length) { setStatus("fallback"); return; }
+        const items = data.items.slice(0, 4).map((it, i) => {
+          const m = (it.link || "").match(/[?&]v=([\w-]{11})/);
+          const vid = m ? m[1] : null;
+          return {
+            id: vid || ("rss" + i),
+            title: it.title || "Untitled",
+            date: fmtDate(it.pubDate),
+            videoId: vid,
+            thumb: vid ? `https://i.ytimg.com/vi/${vid}/hqdefault.jpg` : (it.thumbnail || null),
+            link: it.link || null,
+          };
+        });
+        setVideos(items);
+        setStatus("live");
+      })
+      .catch(() => { if (!cancelled) setStatus("fallback"); });
+    return () => { cancelled = true; };
+  }, []);
+  return (
+    <>
+      <section className="container section watch">
+        <div className="section-head">
+          <div>
+            <div className="eyebrow"><span className="dot"></span>On YouTube</div>
+            <h2 className="section-title">Watch.</h2>
+          </div>
+          <p className="section-lede">Long-form cooking, travel, and the occasional chaos. New videos most weeks at <a href="https://youtube.com/@ClintYur" target="_blank" rel="noreferrer" style={{ borderBottom: "1px solid currentColor" }}>@ClintYur</a>.</p>
+        </div>
+
+        <div className="watch-grid">
+          {videos.map((v, i) => (
+            <button key={v.id} className="watch" onClick={() => open(v)}>
+              <div className="watch-thumb" style={{ background: "var(--ink)" }}>
+                {v.thumb ? (
+                  <img src={v.thumb} alt={v.title} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}/>
+                ) : (
+                  <div style={{ width: "100%", height: "100%", display: "grid", placeItems: "center", color: "var(--cream)", opacity: 0.5, fontFamily: "var(--display)", fontSize: 11, letterSpacing: ".18em", textTransform: "uppercase" }}>
+                    {status === "loading" ? "Loading…" : "@ClintYur"}
+                  </div>
+                )}
+                <span className="watch-play">
+                  <svg width="18" height="20" viewBox="0 0 18 20" fill="none">
+                    <path d="M0 0v20l18-10L0 0z" fill="currentColor"/>
+                  </svg>
+                </span>
+              </div>
+              <div className="watch-meta">
+                <span className="watch-num">№ 0{i + 1}</span>
+                <span className="watch-date">{v.date}</span>
+              </div>
+              <h3 className="watch-title">{v.title}</h3>
+            </button>
+          ))}
+        </div>
+
+        <div className="watch-footer">
+          <a href="https://youtube.com/@ClintYur" target="_blank" rel="noreferrer" className="btn ghost">
+            <Icon.yt/> Subscribe on YouTube <Icon.arrow className="arrow"/>
+          </a>
+        </div>
+      </section>
+
+      <div className={"modal-bg" + (active ? " open" : "")} onClick={close}>
+        {active && (
+          <div className="modal video-modal" onClick={(e) => e.stopPropagation()}>
+            <button className="modal-close" onClick={close}><Icon.close/></button>
+            <div className="video-player">
+              {active.videoId ? (
+                <iframe
+                  src={`https://www.youtube.com/embed/${active.videoId}?autoplay=1`}
+                  allow="autoplay; encrypted-media; picture-in-picture"
+                  allowFullScreen
+                  title={active.title}
+                  frameBorder="0"
+                />
+              ) : (
+                <div className="video-fallback">
+                  <Icon.yt/>
+                  <a href={active.link || "https://youtube.com/@ClintYur"} target="_blank" rel="noreferrer" className="btn" style={{ marginTop: 16 }}>Watch on YouTube <Icon.arrow className="arrow"/></a>
+                </div>
+              )}
+            </div>
+            <div className="video-info">
+              <div className="eyebrow"><span className="dot"></span>{active.date}</div>
+              <h2 className="watch-title" style={{ fontSize: 28, marginTop: 12, lineHeight: 1.15 }}>{active.title}</h2>
+              <a href={active.link || "https://youtube.com/@ClintYur"} target="_blank" rel="noreferrer" className="link-arrow" style={{ marginTop: 16, display: "inline-flex" }}>Open on YouTube <Icon.arrow className="arrow"/></a>
+            </div>
+          </div>
+        )}
+      </div>
+    </>
+  );
+}
+
+Object.assign(window, { Icon, Nav, Footer, Ticker, PromoBar, WatchSection });

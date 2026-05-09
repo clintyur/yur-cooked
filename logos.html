@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>yur cooked. — Logo Studies</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;700;800&family=Anton&family=Space+Mono:wght@400;700&family=Caveat:wght@400;700&family=Instrument+Serif:ital@0;1&family=Bricolage+Grotesque:wght@400;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --cream: #efe9dd;
+  --paper: #f4efe6;
+  --ink: #14110d;
+  --muted: #6b6358;
+  --rule: #d8cfbe;
+  --accent: #b8442a;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: "Archivo", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+.wrap { max-width: 1280px; margin: 0 auto; padding: 56px clamp(20px, 4vw, 56px) 120px; }
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 24px;
+  margin-bottom: 56px;
+}
+.head h1 {
+  font-family: "Archivo Black", sans-serif;
+  font-size: clamp(36px, 5vw, 64px);
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  margin: 0;
+  line-height: 0.92;
+}
+.head .meta {
+  font-family: "Space Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: right;
+}
+
+/* logo grid */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+}
+@media (min-width: 720px) { .grid { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 1080px) { .grid { grid-template-columns: 1fr 1fr 1fr; } }
+
+.card {
+  border: 1px solid var(--rule);
+  background: var(--paper);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+.card-tag {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  font-family: "Space Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  z-index: 2;
+}
+.stage {
+  aspect-ratio: 4/3;
+  display: grid;
+  place-items: center;
+  padding: 32px;
+  position: relative;
+  overflow: hidden;
+}
+.stage.dark { background: var(--ink); color: var(--cream); }
+.foot {
+  border-top: 1px solid var(--rule);
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.foot .name {
+  font-family: "Archivo", sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: -0.005em;
+}
+.foot .desc {
+  font-family: "Space Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: right;
+  max-width: 60%;
+}
+
+/* paper noise base */
+.paper-noise {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .15 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+.stage.dark .paper-noise { opacity: 0.35; mix-blend-mode: overlay; }
+
+/* ====================================================
+   LOGO 01 — Heavy wordmark, period as accent dot
+   ==================================================== */
+.l01 {
+  font-family: "Archivo Black", sans-serif;
+  font-size: clamp(34px, 5vw, 56px);
+  letter-spacing: -0.045em;
+  line-height: 1;
+  position: relative;
+  z-index: 1;
+}
+.l01 .dot {
+  display: inline-block;
+  width: 0.18em; height: 0.18em;
+  border-radius: 50%;
+  background: currentColor;
+  margin-left: -0.04em;
+  transform: translateY(-0.04em);
+}
+
+/* ====================================================
+   LOGO 02 — Stenciled, with rough edge filter
+   ==================================================== */
+.l02 {
+  font-family: "Anton", sans-serif;
+  font-size: clamp(56px, 8.5vw, 96px);
+  letter-spacing: -0.01em;
+  line-height: 0.9;
+  filter: url(#rough);
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+.l02 .gap { letter-spacing: 0.04em; }
+
+/* ====================================================
+   LOGO 03 — Stamp / seal lockup
+   ==================================================== */
+.l03 {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 22px;
+  border: 2px solid currentColor;
+  filter: url(#rough-soft);
+}
+.l03::before {
+  content: "EST · NYC · 2023";
+  font-family: "Space Mono", monospace;
+  font-size: 9px;
+  letter-spacing: 0.32em;
+  font-weight: 700;
+}
+.l03 .word {
+  font-family: "Archivo Black", sans-serif;
+  font-size: clamp(28px, 4vw, 44px);
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+}
+.l03 .word .dot {
+  display: inline-block; width: 0.16em; height: 0.16em;
+  background: currentColor; border-radius: 50%;
+  margin-left: -0.03em; transform: translateY(-0.04em);
+}
+.l03::after {
+  content: "SMALL BATCH · KITCHEN GOODS";
+  font-family: "Space Mono", monospace;
+  font-size: 9px;
+  letter-spacing: 0.32em;
+  font-weight: 700;
+}
+
+/* ====================================================
+   LOGO 04 — Italic editorial slab w/ underline
+   ==================================================== */
+.l04 {
+  font-family: "Instrument Serif", serif;
+  font-style: italic;
+  font-size: clamp(46px, 7vw, 80px);
+  letter-spacing: -0.015em;
+  line-height: 0.95;
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+.l04 .under {
+  display: inline-block;
+  position: relative;
+}
+.l04 .under::after {
+  content: "";
+  position: absolute;
+  left: -2%;
+  right: -2%;
+  bottom: 0.05em;
+  height: 0.08em;
+  background: var(--accent);
+  z-index: -1;
+  filter: url(#rough-soft);
+}
+
+/* ====================================================
+   LOGO 05 — Mono-spaced label, tag style
+   ==================================================== */
+.l05 {
+  font-family: "Space Mono", monospace;
+  font-size: clamp(20px, 2.5vw, 28px);
+  letter-spacing: -0.01em;
+  font-weight: 700;
+  line-height: 1.1;
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.l05 .row1 {
+  display: flex;
+  gap: 0.5em;
+  align-items: baseline;
+}
+.l05 .ticks {
+  font-size: 0.55em;
+  letter-spacing: 0.2em;
+  font-weight: 400;
+  opacity: 0.7;
+}
+.l05 .word {
+  display: inline-block;
+}
+.l05 .bar {
+  height: 4px;
+  background: currentColor;
+  margin-top: 4px;
+}
+
+/* ====================================================
+   LOGO 06 — Hand-painted / signature
+   ==================================================== */
+.l06 {
+  font-family: "Caveat", cursive;
+  font-weight: 700;
+  font-size: clamp(56px, 8vw, 92px);
+  letter-spacing: -0.01em;
+  line-height: 0.92;
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+.l06 .stroke {
+  display: block;
+  width: 60%;
+  height: 3px;
+  background: currentColor;
+  margin: 12px auto 0;
+  border-radius: 100px;
+  filter: url(#rough-soft);
+}
+
+/* ====================================================
+   LOGO 07 — Bricolage condensed w/ hand-stamped period
+   ==================================================== */
+.l07 {
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-weight: 800;
+  font-stretch: 75%;
+  font-size: clamp(48px, 7vw, 80px);
+  letter-spacing: -0.04em;
+  line-height: 0.92;
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  filter: url(#rough-fine);
+}
+.l07 .dot {
+  display: inline-block;
+  width: 0.2em; height: 0.2em;
+  background: var(--accent);
+  margin-left: -0.02em;
+  transform: translateY(-0.04em) rotate(8deg);
+}
+
+/* ====================================================
+   LOGO 08 — Vertical stack / poster mark
+   ==================================================== */
+.l08 {
+  font-family: "Archivo Black", sans-serif;
+  font-size: clamp(36px, 5vw, 56px);
+  letter-spacing: -0.04em;
+  line-height: 0.86;
+  text-align: left;
+  position: relative;
+  z-index: 1;
+}
+.l08 .row {
+  display: block;
+}
+.l08 .label {
+  font-family: "Space Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  font-weight: 400;
+  text-transform: uppercase;
+  margin-top: 12px;
+  display: block;
+  opacity: 0.7;
+}
+.l08 .dot { display: inline-block; width: .14em; height: .14em; background: currentColor; border-radius: 50%; margin-left: -.02em; transform: translateY(-.04em); }
+
+/* ====================================================
+   LOGO 09 — Hot sauce label energy
+   ==================================================== */
+.l09 {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.l09 .topline,
+.l09 .bottomline {
+  font-family: "Space Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.32em;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.l09 .topline::before, .l09 .topline::after,
+.l09 .bottomline::before, .l09 .bottomline::after {
+  content: "";
+  width: 18px; height: 1px;
+  background: currentColor;
+}
+.l09 .word {
+  font-family: "Archivo Black", sans-serif;
+  font-size: clamp(36px, 5.5vw, 60px);
+  letter-spacing: -0.04em;
+  line-height: 1;
+  filter: url(#rough);
+}
+.l09 .word .dot { display: inline-block; width: .18em; height: .18em; background: var(--accent); border-radius: 50%; margin-left: -.04em; transform: translateY(-.04em); }
+
+/* invert toggle row */
+.note {
+  margin-top: 56px;
+  border-top: 1px solid var(--rule);
+  padding-top: 32px;
+  font-family: "Space Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+</style>
+</head>
+<body>
+
+<!-- SVG filter defs for distress effects -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <filter id="rough" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.04 0.06" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2.2"/>
+    </filter>
+    <filter id="rough-soft" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.4"/>
+    </filter>
+    <filter id="rough-fine" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="1" seed="2"/>
+      <feDisplacementMap in="SourceGraphic" scale="0.8"/>
+    </filter>
+  </defs>
+</svg>
+
+<div class="wrap">
+
+  <header class="head">
+    <h1>yur cooked.<br/>logo studies</h1>
+    <div class="meta">
+      Vol. 01 · NYC<br/>
+      9 directions
+    </div>
+  </header>
+
+  <div class="grid">
+
+    <!-- 01 -->
+    <div class="card">
+      <span class="card-tag">№ 01</span>
+      <div class="stage">
+        <div class="paper-noise"></div>
+        <div class="l01">yur&nbsp;cooked<span class="dot"></span></div>
+      </div>
+      <div class="stage dark">
+        <div class="paper-noise"></div>
+        <div class="l01">yur&nbsp;cooked<span class="dot"></span></div>
+      </div>
+      <div class="foot">
+        <span class="name">Block Heavy</span>
+        <span class="desc">Archivo Black · Period as oversized dot</span>
+      </div>
+    </div>
+
+    <!-- 02 -->
+    <div class="card">
+      <span class="card-tag">№ 02</span>
+      <div class="stage">
+        <div class="paper-noise"></div>
+        <div class="l02">yur<br/>cooked.</div>
+      </div>
+      <div class="stage dark">
+        <div class="paper-noise"></div>
+        <div class="l02">yur<br/>cooked.</div>
+      </div>
+      <div class="foot">
+        <span class="name">Stencil Stack</span>
+        <span class="desc">Anton · Roughed edges, two-line</span>
+      </div>
+    </div>
+
+    <!-- 03 -->
+    <div class="card">
+      <span class="card-tag">№ 03</span>
+      <div class="stage">
+        <div class="paper-noise"></div>
+        <div class="l03"><span class="word">yur cooked<span class="dot"></span></span></div>
+      </div>
+      <div class="stage dark">
+        <div class="paper-noise"></div>
+        <div class="l03"><span class="word">yur cooked<span class="dot"></span></span></div>
+      </div>
+      <div class="foot">
+        <span class="name">Boxed Stamp</span>
+        <span class="desc">Inside-collar tag energy</span>
+      </div>
+    </div>
+
+    <!-- 04 -->
+    <div class="card">
+      <span class="card-tag">№ 04</span>
+      <div class="stage">
+        <div class="paper-noise"></div>
+        <div class="l04"><span class="under">yur cooked.</span></div>
+      </div>
+      <div class="stage dark">
+        <div class="paper-noise"></div>
+        <div class="l04"><span class="under">yur cooked.</span></div>
+      </div>
+      <div class="foot">
+        <span class="name">Editorial Italic</span>
+        <span class="desc">Instrument Serif · Painted highlight</span>
+      </div>
+    </div>
+
+    <!-- 05 -->
+    <div class="card">
+      <span class="card-tag">№ 05</span>
+      <div class="stage">
+        <div class="paper-noise"></div>
+        <div class="l05">
+          <div class="row1"><span class="ticks">// 001</span><span class="word">yur cooked.</span></div>
+          <div class="bar"></div>
+        </div>
+      </div>
+      <div class="stage dark">
+        <div class="paper-noise"></div>
+        <div class="l05">
+          <div class="row1"><span class="ticks">// 001</span><span class="word">yur cooked.</span></div>
+          <div class="bar"></div>
+        </div>
+      </div>
+      <div class="foot">
+        <span class="name">Hot Sauce Label</span>
+        <span class="desc">Space Mono · Bottle label feel</span>
+      </div>
+    </div>
+
+    <!-- 06 -->
+    <div class="card">
+      <span class="card-tag">№ 06</span>
+      <div class="stage">
+        <div class="paper-noise"></div>
+        <div class="l06">yur cooked.<span class="stroke"></span></div>
+      </div>
+      <div class="stage dark">
+        <div class="paper-noise"></div>
+        <div class="l06">yur cooked.<span class="stroke"></span></div>
+      </div>
+      <div class="foot">
+        <span class="name">Sharpie Signature</span>
+        <span class="desc">Hand-painted feel · Wall mark</span>
+      </div>
+    </div>
+
+    <!-- 07 -->
+    <div class="card">
+      <span class="card-tag">№ 07</span>
+      <div class="stage">
+        <div class="paper-noise"></div>
+        <div class="l07">yur cooked<span class="dot"></span></div>
+      </div>
+      <div class="stage dark">
+        <div class="paper-noise"></div>
+        <div class="l07">yur cooked<span class="dot"></span></div>
+      </div>
+      <div class="foot">
+        <span class="name">Condensed + Stamp</span>
+        <span class="desc">Bricolage · Tilted ember period</span>
+      </div>
+    </div>
+
+    <!-- 08 -->
+    <div class="card">
+      <span class="card-tag">№ 08</span>
+      <div class="stage" style="justify-items:start; align-items:flex-end;">
+        <div class="paper-noise"></div>
+        <div class="l08" style="justify-self:flex-start; align-self:flex-end;">
+          <span class="row">yur</span>
+          <span class="row">cooked<span class="dot"></span></span>
+          <span class="label">— a kitchen / nyc</span>
+        </div>
+      </div>
+      <div class="stage dark" style="justify-items:start; align-items:flex-end;">
+        <div class="paper-noise"></div>
+        <div class="l08" style="justify-self:flex-start; align-self:flex-end;">
+          <span class="row">yur</span>
+          <span class="row">cooked<span class="dot"></span></span>
+          <span class="label">— a kitchen / nyc</span>
+        </div>
+      </div>
+      <div class="foot">
+        <span class="name">Poster Stack</span>
+        <span class="desc">Two-line corner mark</span>
+      </div>
+    </div>
+
+    <!-- 09 -->
+    <div class="card">
+      <span class="card-tag">№ 09</span>
+      <div class="stage">
+        <div class="paper-noise"></div>
+        <div class="l09">
+          <span class="topline">small batch</span>
+          <span class="word">yur cooked<span class="dot"></span></span>
+          <span class="bottomline">made in nyc</span>
+        </div>
+      </div>
+      <div class="stage dark">
+        <div class="paper-noise"></div>
+        <div class="l09">
+          <span class="topline">small batch</span>
+          <span class="word">yur cooked<span class="dot"></span></span>
+          <span class="bottomline">made in nyc</span>
+        </div>
+      </div>
+      <div class="foot">
+        <span class="name">Bottle Cap</span>
+        <span class="desc">Top + bottom rule · Roughed</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="note">
+    <span>Each option shown light + dark · Roughed via SVG turbulence (scalable, not raster)</span>
+    <span>Tell me № to refine</span>
+  </div>
+
+</div>
+
+</body>
+</html>

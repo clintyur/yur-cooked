@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>yur cooked — Recipes. Goods. The Art of Eating Well.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600;700;800;900&family=Bodoni+Moda:ital,opsz,wght@1,6..96,400&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+<div id="root"></div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <filter id="hand" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025 0.06" numOctaves="2" seed="5"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.6"/>
+    </filter>
+
+    <!-- Liquid mercury / playdough morph — toggle with GOOEY_WORDMARK in pages.jsx -->
+    <filter id="gooey" x="-12%" y="-20%" width="124%" height="140%" color-interpolation-filters="sRGB">
+      <feTurbulence type="turbulence" baseFrequency="0.007 0.011" numOctaves="4" seed="3" result="warp">
+        <animate attributeName="baseFrequency"
+          values="0.007 0.011; 0.013 0.007; 0.009 0.015; 0.013 0.009; 0.007 0.011"
+          dur="9s" repeatCount="indefinite" calcMode="spline"
+          keySplines="0.4 0 0.6 1; 0.4 0 0.6 1; 0.4 0 0.6 1; 0.4 0 0.6 1"/>
+        <animate attributeName="seed"
+          values="3; 7; 11; 5; 3"
+          dur="18s" repeatCount="indefinite"/>
+      </feTurbulence>
+      <feDisplacementMap in="SourceGraphic" in2="warp" scale="28"
+        xChannelSelector="R" yChannelSelector="G" result="morphed"/>
+      <feGaussianBlur in="morphed" stdDeviation="1.2" result="blurred"/>
+      <feComposite in="blurred" in2="blurred" operator="over"/>
+    </filter>
+  </defs>
+</svg>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script src="image-slot.js"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel" src="components.jsx"></script>
+<script type="text/babel" src="pages.jsx"></script>
+
+<script type="text/babel">
+const { useState, useEffect } = React;
+
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "accent": "#b8442a",
+  "theme": "light"
+}/*EDITMODE-END*/;
+
+function App() {
+  const [page, setPage] = useState("home");
+  const [promo, setPromo] = useState(true);
+  const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+
+  useEffect(() => {
+    document.documentElement.style.setProperty("--accent", t.accent);
+    document.documentElement.setAttribute("data-theme", t.theme);
+  }, [t.accent, t.theme]);
+
+  const Page = {
+    home: HomePage,
+    recipe: RecipeBookPage,
+    shop: ShopPage,
+    about: AboutPage,
+    contact: ContactPage,
+  }[page] || HomePage;
+
+  const screenLabel = {
+    home: "01 Home",
+    recipe: "02 Recipes",
+    shop: "03 Shop",
+    about: "04 About",
+    contact: "05 Contact",
+  }[page];
+
+  return (
+    <div data-screen-label={screenLabel} className={promo ? "has-promo" : ""}>
+      {promo && <PromoBar onClose={() => setPromo(false)}/>}
+      <Nav page={page} setPage={setPage}/>
+      <Page setPage={setPage}/>
+      <Footer setPage={setPage}/>
+
+      <TweaksPanel title="Tweaks">
+        <TweakSection label="Accent">
+          <TweakColor label="Color" value={t.accent} options={["#b8442a","#3d4a2a","#6b1f1c","#c9921f","#1a1814"]} onChange={(v) => setTweak("accent", v)}/>
+        </TweakSection>
+        <TweakSection label="Theme">
+          <TweakRadio label="Mode" value={t.theme} options={["light","dark"]} onChange={(v) => setTweak("theme", v)}/>
+        </TweakSection>
+      </TweaksPanel>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>
