@@ -8,7 +8,18 @@ const GOOEY_WORDMARK = false;
 
 /* ============ HOME ============ */
 function HomePage({ setPage }) {
+  const [revealing, setRevealing] = React.useState(null);
   const go = (p) => (e) => { e.preventDefault(); setPage(p); window.scrollTo({ top: 0, behavior: "instant" }); };
+  const reveal = (p) => (e) => {
+    e.preventDefault();
+    if (revealing) return;
+    setRevealing(p);
+    setTimeout(() => {
+      setPage(p);
+      window.scrollTo({ top: 0, behavior: "instant" });
+      setRevealing(null);
+    }, 420);
+  };
   return (
     <div className="page">
       {/* Hero */}
@@ -74,10 +85,10 @@ function HomePage({ setPage }) {
         </div>
 
         <div className="preview-grid">
-          <a href="#" onClick={go("recipe")} className="preview">
+          <a href="#" onClick={reveal("recipe")} className="preview">
             <div className="preview-img">
               <span className="badge">New</span>
-              <img src="images/recipe-preview-bg.jpg" alt="Recipes" style={{width:"100%",height:"100%",objectFit:"cover",display:"block",filter:"blur(6px)",transform:"scale(1.08)"}}/>
+              <img src="images/recipe-preview-bg.jpg" alt="Recipes" style={{width:"100%",height:"100%",objectFit:"cover",display:"block",transform:"scale(1.08)",filter:revealing==="recipe"?"blur(0px)":"blur(6px)",transition:"filter 0.4s ease"}}/>
             </div>
             <div className="preview-meta">
               <h3 className="preview-name">The <span className="it">Recipe Stash</span></h3>
@@ -86,9 +97,9 @@ function HomePage({ setPage }) {
             <p className="preview-desc">31 recipes I cook on repeat. Free to read. Reads more like a cookbook than a blog.</p>
             <span className="preview-cta">See the Recipes <Icon.arrow/></span>
           </a>
-          <a href="#" onClick={go("shop")} className="preview">
+          <a href="#" onClick={reveal("shop")} className="preview">
             <div className="preview-img">
-              <img src="images/goods-preview.jpg" alt="The Goods" style={{width:"100%",height:"100%",objectFit:"cover",display:"block",filter:"blur(6px)",transform:"scale(1.08)"}}/>
+              <img src="images/goods-preview.jpg" alt="The Goods" style={{width:"100%",height:"100%",objectFit:"cover",display:"block",transform:"scale(1.08)",filter:revealing==="shop"?"blur(0px)":"blur(6px)",transition:"filter 0.4s ease"}}/>
             </div>
             <div className="preview-meta">
               <h3 className="preview-name">The <span className="it">Goods</span></h3>
@@ -97,9 +108,9 @@ function HomePage({ setPage }) {
             <p className="preview-desc">Aprons, denim, knife sheaths. Built to take a beating, then some.</p>
             <span className="preview-cta">Shop Now <Icon.arrow/></span>
           </a>
-          <a href="#" onClick={go("about")} className="preview">
+          <a href="#" onClick={reveal("about")} className="preview">
             <div className="preview-img">
-              <img src="images/story-preview.jpg" alt="The Story" style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"center top",display:"block",filter:"blur(6px)",transform:"scale(1.08)"}}/>
+              <img src="images/story-preview.jpg" alt="The Story" style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"center top",display:"block",transform:"scale(1.08)",filter:revealing==="about"?"blur(0px)":"blur(6px)",transition:"filter 0.4s ease"}}/>
             </div>
             <div className="preview-meta">
               <h3 className="preview-name">The <span className="it">Story</span></h3>
