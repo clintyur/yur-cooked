@@ -665,12 +665,9 @@ function RecipeBookPage({ setPage }) {
 
 /* ============ SHOP ============ */
 const PRODUCTS = [
-  { id: "p1", name: "Workhorse Apron", cat: "Aprons", price: "$78", tag: "New" },
-  { id: "p2", name: "Selvedge Kitchen Jean", cat: "Denim", price: "$165", tag: null },
-  { id: "p3", name: "Leather Knife Sheath", cat: "Tools", price: "$94", tag: "Limited" },
-  { id: "p4", name: "Linen Tea Towel — Set of 2", cat: "Essentials", price: "$32", tag: null },
-  { id: "p5", name: "Salt Cellar — Stoneware", cat: "Essentials", price: "$48", tag: null },
-  { id: "p6", name: "Cotton Chef Cap", cat: "Apparel", price: "$36", tag: null },
+  { id: "p1", name: "Selvedge Denim Apron",    cat: "Aprons", price: "—", tag: "Coming Soon" },
+  { id: "p2", name: "Selvedge Denim Knife Bag", cat: "Tools",  price: "—", tag: "Coming Soon" },
+  { id: "p3", name: "Chef Denim",               cat: "Denim",  price: "—", tag: "Coming Soon" },
 ];
 
 function ShopPage() {
