@@ -818,7 +818,7 @@ function AboutPage({ setPage }) {
 }
 
 /* ============ CONTACT ============ */
-const CONTACT_URL = "https://script.google.com/macros/s/AKfycbwSadvStjJ8JMlda6qrA_s9LgMPEVDna6mXAbVNAuota1yIdlP4u3aY87IYDXHZNzY4/exec";
+const CONTACT_URL = "https://script.google.com/macros/s/AKfycbxgrljAaz2PbV0uePrpegkLcHFY4sgn1FaTfIpKC3OB1EqMDDbtZ1-g8rAbnWZ7C7fT/exec";
 
 function ContactPage() {
   const [mode, setMode] = useStateP("Private Dinner");
