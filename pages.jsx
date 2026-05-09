@@ -3,7 +3,7 @@ const { useState: useStateP, useEffect: useEffectP } = React;
 
 // ─── EFFECT TOGGLES ──────────────────────────────────────────────────────────
 // Flip to true to enable the liquid mercury wordmark effect on the hero
-const GOOEY_WORDMARK = true;
+const GOOEY_WORDMARK = false;
 // ─────────────────────────────────────────────────────────────────────────────
 
 /* ============ HOME ============ */
@@ -68,7 +68,7 @@ function HomePage({ setPage }) {
         <div className="section-head">
           <div>
             <div className="eyebrow"><span className="dot"></span>Index</div>
-            <h2 className="section-title">Three <span className="it">things</span><br/>worth your time.</h2>
+            <h2 className="section-title">Yur next favorite<br/><span className="it">thing</span> is here.</h2>
           </div>
           <p className="section-lede">A working notebook of recipes I cook on repeat. A tight collection of goods I actually wear in the kitchen. And the long version of how all of this started — for the people who like the long version.</p>
         </div>
