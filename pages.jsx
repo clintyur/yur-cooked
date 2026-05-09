@@ -829,6 +829,18 @@ function ContactPage() {
   const dateRef = React.useRef();
   const guestsRef = React.useRef();
   const messageRef = React.useRef();
+  const fpRef = React.useRef();
+
+  React.useEffect(() => {
+    if (mode === "Private Dinner" && dateRef.current && window.flatpickr) {
+      fpRef.current = window.flatpickr(dateRef.current, {
+        minDate: "today",
+        dateFormat: "M j, Y",
+        disableMobile: false,
+      });
+    }
+    return () => { if (fpRef.current) { fpRef.current.destroy(); fpRef.current = null; } };
+  }, [mode]);
 
   const submit = (e) => {
     e.preventDefault();
@@ -898,7 +910,7 @@ function ContactPage() {
               <div className="field-grid">
                 <div className="field">
                   <label>Date</label>
-                  <input ref={dateRef} type="date" placeholder="When?"/>
+                  <input ref={dateRef} type="text" placeholder="When?" readOnly/>
                 </div>
                 <div className="field">
                   <label>Guests</label>
