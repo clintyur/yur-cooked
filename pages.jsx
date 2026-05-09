@@ -49,7 +49,7 @@ function HomePage({ setPage }) {
       </section>
 
       {/* Ticker */}
-      <Ticker items={["The Recipes", "Free to Read", "31 & Counting", "Shop the Goods", "Private Dinners", "Vol. 01"]}/>
+      <Ticker items={["The Recipes", "Free to Read", `${RECIPES.length} & Counting`, "Shop the Goods", "Private Dinners", "Vol. 01"]}/>
 
       {/* Intro / quote */}
       <section className="container">
@@ -94,7 +94,7 @@ function HomePage({ setPage }) {
               <h3 className="preview-name">The <span className="it">Recipe Stash</span></h3>
               <span className="preview-num">01 / 03</span>
             </div>
-            <p className="preview-desc">31 recipes I cook on repeat. Free to read. Reads more like a cookbook than a blog.</p>
+            <p className="preview-desc">{RECIPES.length} recipes I cook on repeat. Free to read. Reads more like a cookbook than a blog.</p>
             <span className="preview-cta">See the Recipes <Icon.arrow/></span>
           </a>
           <a href="#" onClick={reveal("shop")} className="preview">
@@ -568,14 +568,14 @@ function RecipeBookPage({ setPage }) {
             <a href="#" onClick={(e) => { e.preventDefault(); setPage && setPage("subscribe"); }} className="btn ghost">Subscribe — from $3.99/mo</a>
           </div>
           <div className="book-stats">
-            <div className="stat"><span className="num">31</span><span className="lbl">Recipes</span></div>
+            <div className="stat"><span className="num">{RECIPES.length}</span><span className="lbl">Recipes</span></div>
             <div className="stat"><span className="num">∞</span><span className="lbl">Re-cooks</span></div>
             <div className="stat"><span className="num">$0</span><span className="lbl">To read</span></div>
           </div>
         </div>
       </section>
 
-      <Ticker items={["31 Recipes", "Free to Read", "Updated Often", "Made in NYC", "Vol. 01"]}/>
+      <Ticker items={[`${RECIPES.length} Recipes`, "Free to Read", "Updated Often", "Made in NYC", "Vol. 01"]}/>
 
       <section id="recipes" className="container section">
         <div className="section-head">
@@ -583,7 +583,7 @@ function RecipeBookPage({ setPage }) {
             <div className="eyebrow"><span className="dot"></span>The Index</div>
             <h2 className="section-title">A few of my <span className="it">favorites.</span></h2>
           </div>
-          <p className="section-lede">Six pulled from the index — the ones I'd hand a friend if they asked where to start.</p>
+          <p className="section-lede">{RECIPES.length} pulled from the index — the ones I'd hand a friend if they asked where to start.</p>
         </div>
 
         <div className="recipe-grid">
@@ -782,7 +782,7 @@ function AboutPage({ setPage }) {
 
       <div className="about-strip">
         <div className="cell"><div className="num">9<span className="it">+</span></div><div className="lbl">Years cooking</div></div>
-        <div className="cell"><div className="num">31</div><div className="lbl">Recipes published</div></div>
+        <div className="cell"><div className="num">{RECIPES.length}</div><div className="lbl">Recipes published</div></div>
         <div className="cell"><div className="num">2022</div><div className="lbl">Started sharing</div></div>
       </div>
 
@@ -1075,7 +1075,7 @@ function SubscribePage({ setPage }) {
           <h2 className="section-title">What's <span className="it">inside.</span></h2>
           <div className="sub-grid">
             <div className="sub-item">
-              <span className="sub-item-num">10+</span>
+              <span className="sub-item-num">{RECIPES.length}</span>
               <span className="sub-item-label">Recipes live now</span>
             </div>
             <div className="sub-item">
