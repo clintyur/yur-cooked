@@ -953,21 +953,21 @@ button { font-family: inherit; cursor: pointer; }
   color: var(--muted);
 }
 .about-story .col-body p {
-  font-family: var(--serif);
-  font-size: clamp(20px, 2vw, 26px);
-  line-height: 1.45;
-  letter-spacing: -0.005em;
+  font-family: var(--sans);
+  font-size: clamp(16px, 1.6vw, 20px);
+  line-height: 1.6;
+  letter-spacing: -0.01em;
   margin: 0 0 1em;
   text-wrap: pretty;
 }
 .about-story .col-body p:first-of-type::first-letter {
-  font-family: var(--serif);
+  font-family: var(--sans);
   font-size: 5em;
   line-height: 0.85;
   float: left;
   padding: 8px 14px 0 0;
   color: var(--accent);
-  font-style: italic;
+  font-weight: 800;
 }
 .about-story .col-body p .pull {
   background: linear-gradient(transparent 60%, color-mix(in oklab, var(--accent) 30%, transparent) 60%);
