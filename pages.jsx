@@ -818,10 +818,38 @@ function AboutPage({ setPage }) {
 }
 
 /* ============ CONTACT ============ */
+const CONTACT_URL = "https://script.google.com/macros/s/AKfycbwSadvStjJ8JMlda6qrA_s9LgMPEVDna6mXAbVNAuota1yIdlP4u3aY87IYDXHZNzY4/exec";
+
 function ContactPage() {
   const [mode, setMode] = useStateP("Private Dinner");
   const [sent, setSent] = useStateP(false);
-  const submit = (e) => { e.preventDefault(); setSent(true); };
+  const [sending, setSending] = useStateP(false);
+  const nameRef = React.useRef();
+  const emailRef = React.useRef();
+  const dateRef = React.useRef();
+  const guestsRef = React.useRef();
+  const messageRef = React.useRef();
+
+  const submit = (e) => {
+    e.preventDefault();
+    if (sending || sent) return;
+    setSending(true);
+    const payload = {
+      mode,
+      name:    nameRef.current?.value    || "",
+      email:   emailRef.current?.value   || "",
+      date:    dateRef.current?.value    || "",
+      guests:  guestsRef.current?.value  || "",
+      message: messageRef.current?.value || "",
+    };
+    fetch(CONTACT_URL, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    })
+    .catch(() => {})
+    .finally(() => { setSending(false); setSent(true); });
+  };
+
   return (
     <div className="page">
       <section className="container">
@@ -829,7 +857,7 @@ function ContactPage() {
           <div className="contact-info">
             <div className="eyebrow" style={{ marginBottom: 16 }}><span className="dot"></span>Get in touch</div>
             <h1>Let's <span className="it">cook</span> something.</h1>
-            <p>Available for private dinners in New York and select destinations — plus brand collaborations, editorial, and consulting. Drop a note and I'll get back within 48 hours.</p>
+            <p>Available for private dinners in New York and select destinations — plus brand collabs, sponsorships, and pop-ups. Drop a note and I'll get back within 48 hours.</p>
             <div className="contact-modes">
               <div className="mode">
                 <span className="mode-name"><span className="it">Private</span> dinners</span>
@@ -858,33 +886,33 @@ function ContactPage() {
             <div className="field-grid">
               <div className="field">
                 <label>Name</label>
-                <input type="text" placeholder="Your name"/>
+                <input ref={nameRef} type="text" placeholder="Your name"/>
               </div>
               <div className="field">
                 <label>Email</label>
-                <input type="email" placeholder="you@email.com"/>
+                <input ref={emailRef} type="email" placeholder="you@email.com"/>
               </div>
             </div>
             {mode === "Private Dinner" && (
               <div className="field-grid">
                 <div className="field">
                   <label>Date</label>
-                  <input type="text" placeholder="When?"/>
+                  <input ref={dateRef} type="text" placeholder="When?"/>
                 </div>
                 <div className="field">
                   <label>Guests</label>
-                  <input type="text" placeholder="How many?"/>
+                  <input ref={guestsRef} type="text" placeholder="How many?"/>
                 </div>
               </div>
             )}
             <div className="field">
               <label>Tell me more</label>
-              <textarea rows="4" placeholder="The vibe, the menu, the dream dinner…"></textarea>
+              <textarea ref={messageRef} rows="4" placeholder="The vibe, the menu, the dream dinner…"></textarea>
             </div>
             <div className="submit-row">
               <span className="eyebrow">{sent ? "Sent — talk soon." : "We'll be in touch within 48h"}</span>
-              <button type="submit" className="btn" disabled={sent}>
-                {sent ? "Sent ✓" : <>Send Note <Icon.arrow className="arrow"/></>}
+              <button type="submit" className="btn" disabled={sent || sending}>
+                {sent ? "Sent ✓" : sending ? "Sending…" : <>Send Note <Icon.arrow className="arrow"/></>}
               </button>
             </div>
           </form>
