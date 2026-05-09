@@ -845,7 +845,7 @@ function ContactPage() {
     fetch(CONTACT_URL, {
       method: "POST",
       mode: "no-cors",
-      body: JSON.stringify(payload),
+      body: new URLSearchParams(payload),
     })
     .catch(() => {})
     .finally(() => { setSending(false); setSent(true); });
