@@ -820,7 +820,6 @@ function AboutPage({ setPage }) {
           <div className="cluster" style={{ justifyContent: "center", gap: 12, marginTop: 16 }}>
             <a href="#" className="social-bar" style={{ display: "inline-flex" }}><Icon.ig/> @clintyurr</a>
             <a href="#" className="social-bar" style={{ display: "inline-flex" }}><Icon.yt/> @ClintYur</a>
-            <a href="#" className="social-bar" style={{ display: "inline-flex" }}><Icon.tt/> @clintyurrrr</a>
           </div>
           <a href="#" onClick={go("contact")} className="link-arrow" style={{ alignSelf: "center", marginTop: 16 }}>Or work with me <Icon.arrow className="arrow"/></a>
         </div>

@@ -74,9 +74,8 @@ function Nav({ page, setPage }) {
           <a key={k} href="#" onClick={go(k)} className="nav-link">{l}</a>
         ))}
         <div className="mobile-menu-foot">
-          <a href="#">Instagram</a>
-          <a href="#">YouTube</a>
-          <a href="#">TikTok</a>
+          <a href="https://instagram.com/clintyurr" target="_blank" rel="noreferrer">Instagram</a>
+          <a href="https://youtube.com/@ClintYur" target="_blank" rel="noreferrer">YouTube</a>
         </div>
       </div>
     </>
