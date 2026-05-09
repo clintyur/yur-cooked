@@ -833,7 +833,7 @@ function ContactPage() {
             <div className="contact-modes">
               <div className="mode">
                 <span className="mode-name"><span className="it">Private</span> dinners</span>
-                <span className="mode-meta">From $1,200<br/>Intimate · Events</span>
+                <span className="mode-meta">From $700<br/>2–100+ Guests · Intimate · Events</span>
               </div>
               <div className="mode">
                 <span className="mode-name">Brand <span className="it">collabs</span></span>
