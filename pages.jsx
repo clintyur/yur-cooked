@@ -98,8 +98,8 @@ function HomePage({ setPage }) {
             <span className="preview-cta">Shop Now <Icon.arrow/></span>
           </a>
           <a href="#" onClick={go("about")} className="preview">
-            <div className="preview-img coming-soon-img">
-              <span className="coming-soon-text">coming<br/>soon.</span>
+            <div className="preview-img">
+              <img src="images/story-preview.jpg" alt="The Story" style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"center top",display:"block",filter:"blur(6px)",transform:"scale(1.08)"}}/>
             </div>
             <div className="preview-meta">
               <h3 className="preview-name">The <span className="it">Story</span></h3>
