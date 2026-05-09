@@ -3,14 +3,14 @@
    ============================================================ */
 
 :root {
-  --cream: #efe9dd;
-  --cream-2: #e7e0d1;
-  --ink: #1a1814;
-  --ink-2: #2a2620;
-  --muted: #6b6358;
-  --rule: #d8cfbe;
+  --cream: #ffffff;
+  --cream-2: #f2f2f2;
+  --ink: #000000;
+  --ink-2: #111111;
+  --muted: #666666;
+  --rule: #dedede;
   --accent: #b8442a;     /* ember */
-  --accent-ink: #fafaf7;
+  --accent-ink: #ffffff;
   --bg: var(--cream);
   --fg: var(--ink);
 
@@ -25,13 +25,13 @@
 }
 
 [data-theme="dark"] {
-  --cream: #15130f;
-  --cream-2: #1f1c17;
-  --ink: #efe9dd;
-  --ink-2: #d8cfbe;
-  --muted: #8a8275;
-  --rule: #2a2620;
-  --accent-ink: #fafaf7;
+  --cream: #000000;
+  --cream-2: #111111;
+  --ink: #ffffff;
+  --ink-2: #eeeeee;
+  --muted: #888888;
+  --rule: #222222;
+  --accent-ink: #ffffff;
 }
 
 * { box-sizing: border-box; }
@@ -312,7 +312,7 @@ button { font-family: inherit; cursor: pointer; }
   white-space: nowrap;
   position: relative;
   z-index: 2;
-  color: #f8f3e7;
+  color: #ffffff;
   width: 100%;
   padding: 0 var(--gutter);
   max-width: var(--max);
