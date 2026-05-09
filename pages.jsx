@@ -666,7 +666,7 @@ function RecipeBookPage({ setPage }) {
 /* ============ SHOP ============ */
 const PRODUCTS = [
   { id: "p1", name: "Selvedge Denim Apron",    cat: "Aprons", price: "—", tag: "Coming Soon" },
-  { id: "p2", name: "Selvedge Denim Knife Bag", cat: "Tools",  price: "—", tag: "Coming Soon" },
+  { id: "p2", name: "Selvedge Denim Knife Roll", cat: "Tools",  price: "—", tag: "Coming Soon" },
   { id: "p3", name: "Chef Denim",               cat: "Denim",  price: "—", tag: "Coming Soon" },
 ];
 
