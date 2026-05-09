@@ -887,11 +887,11 @@ function ContactPage() {
             <div className="field-grid">
               <div className="field">
                 <label>Name</label>
-                <input ref={nameRef} type="text" placeholder="Your name"/>
+                <input ref={nameRef} type="text" placeholder="Your name" required/>
               </div>
               <div className="field">
                 <label>Email</label>
-                <input ref={emailRef} type="email" placeholder="you@email.com"/>
+                <input ref={emailRef} type="email" placeholder="you@email.com" required/>
               </div>
             </div>
             {mode === "Private Dinner" && (
