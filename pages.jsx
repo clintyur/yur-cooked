@@ -820,27 +820,81 @@ function AboutPage({ setPage }) {
 /* ============ CONTACT ============ */
 const CONTACT_URL = "https://script.google.com/macros/s/AKfycbxgrljAaz2PbV0uePrpegkLcHFY4sgn1FaTfIpKC3OB1EqMDDbtZ1-g8rAbnWZ7C7fT/exec";
 
+const CAL_MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+const CAL_DAYS   = ["Su","Mo","Tu","We","Th","Fr","Sa"];
+
+function DatePicker({ value, onChange }) {
+  const [open, setOpen] = React.useState(false);
+  const today = new Date(); today.setHours(0,0,0,0);
+  const [view, setView] = React.useState({ y: today.getFullYear(), m: today.getMonth() });
+  const ref = React.useRef();
+
+  React.useEffect(() => {
+    const close = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    document.addEventListener("mousedown", close);
+    return () => document.removeEventListener("mousedown", close);
+  }, []);
+
+  const prev = () => setView(v => v.m === 0 ? { y: v.y-1, m: 11 } : { y: v.y, m: v.m-1 });
+  const next = () => setView(v => v.m === 11 ? { y: v.y+1, m: 0 } : { y: v.y, m: v.m+1 });
+
+  const firstDay = new Date(view.y, view.m, 1).getDay();
+  const totalDays = new Date(view.y, view.m+1, 0).getDate();
+  const cells = Array(firstDay).fill(null).concat(Array.from({length: totalDays}, (_,i) => i+1));
+
+  const pick = (day) => {
+    const d = new Date(view.y, view.m, day);
+    if (d < today) return;
+    onChange(d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }));
+    setOpen(false);
+  };
+
+  return (
+    <div ref={ref} style={{ position: "relative" }}>
+      <input
+        type="text"
+        readOnly
+        value={value}
+        placeholder="When?"
+        onClick={() => setOpen(o => !o)}
+        style={{ cursor: "pointer", width: "100%", fontFamily: "inherit", fontSize: "inherit", fontWeight: "inherit", background: "transparent", border: 0, outline: 0, color: "var(--ink)", padding: 0, letterSpacing: "-0.01em" }}
+      />
+      {open && (
+        <div className="dp-cal">
+          <div className="dp-head">
+            <button type="button" className="dp-nav" onClick={prev}>‹</button>
+            <span className="dp-title">{CAL_MONTHS[view.m]} {view.y}</span>
+            <button type="button" className="dp-nav" onClick={next}>›</button>
+          </div>
+          <div className="dp-grid">
+            {CAL_DAYS.map(d => <span key={d} className="dp-wday">{d}</span>)}
+            {cells.map((day, i) => {
+              if (!day) return <span key={"e"+i}/>;
+              const d = new Date(view.y, view.m, day);
+              const past = d < today;
+              const sel  = value === d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+              return (
+                <button key={day} type="button"
+                  className={"dp-day" + (past ? " dp-past" : "") + (sel ? " dp-sel" : "")}
+                  onClick={() => pick(day)} disabled={past}>{day}</button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function ContactPage() {
   const [mode, setMode] = useStateP("Private Dinner");
   const [sent, setSent] = useStateP(false);
   const [sending, setSending] = useStateP(false);
+  const [dateVal, setDateVal] = React.useState("");
   const nameRef = React.useRef();
   const emailRef = React.useRef();
-  const dateRef = React.useRef();
   const guestsRef = React.useRef();
   const messageRef = React.useRef();
-  const fpRef = React.useRef();
-
-  React.useEffect(() => {
-    if (mode === "Private Dinner" && dateRef.current && window.flatpickr) {
-      fpRef.current = window.flatpickr(dateRef.current, {
-        minDate: "today",
-        dateFormat: "M j, Y",
-        disableMobile: false,
-      });
-    }
-    return () => { if (fpRef.current) { fpRef.current.destroy(); fpRef.current = null; } };
-  }, [mode]);
 
   const submit = (e) => {
     e.preventDefault();
@@ -850,7 +904,7 @@ function ContactPage() {
       mode,
       name:    nameRef.current?.value    || "",
       email:   emailRef.current?.value   || "",
-      date:    dateRef.current?.value    || "",
+      date:    dateVal                   || "",
       guests:  guestsRef.current?.value  || "",
       message: messageRef.current?.value || "",
     };
@@ -910,7 +964,7 @@ function ContactPage() {
               <div className="field-grid">
                 <div className="field">
                   <label>Date</label>
-                  <input ref={dateRef} type="text" placeholder="When?" readOnly/>
+                  <DatePicker value={dateVal} onChange={setDateVal}/>
                 </div>
                 <div className="field">
                   <label>Guests</label>
