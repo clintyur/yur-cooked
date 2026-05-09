@@ -46,6 +46,7 @@ function Nav({ page, setPage }) {
   const links = [
     ["recipe", "Recipes"],
     ["shop", "Shop"],
+    ["subscribe", "Subscribe"],
     ["about", "About"],
     ["contact", "Contact"],
   ];
@@ -153,7 +154,8 @@ function Ticker({ items }) {
 }
 
 /* ============ Promo bar ============ */
-function PromoBar({ onClose }) {
+function PromoBar({ onClose, setPage }) {
+  const goSubscribe = (e) => { e.preventDefault(); if (setPage) setPage("subscribe"); window.scrollTo({ top: 0, behavior: "instant" }); };
   return (
     <div className="promo">
       <div className="container promo-row">
@@ -163,7 +165,7 @@ function PromoBar({ onClose }) {
           <span className="promo-text">
             Unlock <strong>50% off for a year</strong> when you subscribe now
           </span>
-          <a href="#" className="promo-cta">Subscribe <Icon.arrow/></a>
+          <a href="#" onClick={goSubscribe} className="promo-cta">Subscribe <Icon.arrow/></a>
         </div>
         <button className="promo-close" onClick={onClose} aria-label="Dismiss">
           <Icon.close/>

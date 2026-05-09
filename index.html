@@ -84,7 +84,7 @@ function App() {
 
   return (
     <div data-screen-label={screenLabel} className={promo ? "has-promo" : ""}>
-      {promo && <PromoBar onClose={() => setPromo(false)}/>}
+      {promo && <PromoBar onClose={() => setPromo(false)} setPage={setPage}/>}
       <Nav page={page} setPage={setPage}/>
       <Page setPage={setPage}/>
       <Footer setPage={setPage}/>
