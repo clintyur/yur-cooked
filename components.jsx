@@ -379,10 +379,10 @@ function SignupModal() {
         ) : (
           <>
             <div className="signup-header">
-              <span className="signup-logo">yur cooked<span className="signup-dot">.</span></span>
+              <span className="signup-logo">yur cooked.</span>
             </div>
             <h2 className="signup-heading">Yur first<br/>to know.</h2>
-            <p className="signup-body">New drops, pop-ups, private dinners, and recipes before anyone else. Sign up and get 10% off your first shop order.</p>
+            <p className="signup-body">New drops, pop-ups, and recipes before anyone else. Sign up and get 10% off your first shop order.</p>
             <form className="signup-form" onSubmit={submit}>
               <input
                 className="signup-input"
