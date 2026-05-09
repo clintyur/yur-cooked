@@ -93,7 +93,7 @@ function Footer({ setPage }) {
             <div className="footer-mark">yur cooked.</div>
             <p className="footer-tag">Recipes, goods, and the art of eating well — from a kitchen in New York.</p>
             <div className="cluster" style={{ marginTop: 24 }}>
-              <a href="#" className="social-bar" style={{ display: "inline-flex" }}>
+              <a href="https://instagram.com/clintyurr" target="_blank" rel="noreferrer" className="social-bar" style={{ display: "inline-flex" }}>
                 <Icon.ig /> @clintyurr
               </a>
             </div>
@@ -110,17 +110,15 @@ function Footer({ setPage }) {
           <div>
             <h4>Follow</h4>
             <ul>
-              <li><a href="#"><span style={{display:"inline-flex",gap:8,alignItems:"center"}}><Icon.ig/> Instagram</span></a></li>
-              <li><a href="#"><span style={{display:"inline-flex",gap:8,alignItems:"center"}}><Icon.yt/> YouTube</span></a></li>
-              <li><a href="#"><span style={{display:"inline-flex",gap:8,alignItems:"center"}}><Icon.tt/> TikTok</span></a></li>
+              <li><a href="https://instagram.com/clintyurr" target="_blank" rel="noreferrer"><span style={{display:"inline-flex",gap:8,alignItems:"center"}}><Icon.ig/> Instagram</span></a></li>
+              <li><a href="https://youtube.com/@ClintYur" target="_blank" rel="noreferrer"><span style={{display:"inline-flex",gap:8,alignItems:"center"}}><Icon.yt/> YouTube</span></a></li>
             </ul>
           </div>
           <div>
             <h4>Inquiries</h4>
             <ul>
               <li><a href="#" onClick={go("contact")}>Private Chef</a></li>
-              <li><a href="#" onClick={go("contact")}>Brand Collaborations</a></li>
-              <li><a href="#" onClick={go("contact")}>Press</a></li>
+              <li><a href="#" onClick={go("contact")}>Collaborations</a></li>
             </ul>
           </div>
         </div>
