@@ -836,12 +836,8 @@ function ContactPage() {
                 <span className="mode-meta">From $700<br/>2–100+ Guests · Intimate · Events</span>
               </div>
               <div className="mode">
-                <span className="mode-name">Brand <span className="it">collabs</span></span>
-                <span className="mode-meta">Editorial · Recipe Dev<br/>Content</span>
-              </div>
-              <div className="mode">
-                <span className="mode-name"><span className="it">Press</span> & speaking</span>
-                <span className="mode-meta">Interviews · Panels<br/>Demos</span>
+                <span className="mode-name"><span className="it">Collab</span></span>
+                <span className="mode-meta">Video · Photo · Sponsorship<br/>Pop-Ups · Events</span>
               </div>
             </div>
             <div className="cluster" style={{ marginTop: 32, gap: 12 }}>
@@ -854,7 +850,7 @@ function ContactPage() {
             <div className="field">
               <label>What is this about?</label>
               <div className="pill-row">
-                {["Private Dinner", "Brand Collab", "Press", "Other"].map((m) => (
+                {["Private Dinner", "Collab", "Pop-Up", "Other"].map((m) => (
                   <button key={m} type="button" className={"pill" + (mode === m ? " active" : "")} onClick={() => setMode(m)}>{m}</button>
                 ))}
               </div>
