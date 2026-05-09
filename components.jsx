@@ -308,4 +308,97 @@ function WatchSection() {
   );
 }
 
-Object.assign(window, { Icon, Nav, Footer, Ticker, PromoBar, WatchSection });
+/* ============ Signup Modal ============ */
+// ─── Paste your Google Apps Script URL here after deploying ───────────────────
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbyepLsFHo8vdsoma0CEkHJ5yveH_-FrZ46Dm4-cmVm0qWEhyDBN1GO9iBzfi7ULed3_/exec";
+// ─────────────────────────────────────────────────────────────────────────────
+
+function SignupModal() {
+  const [open, setOpen] = useState(false);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [status, setStatus] = useState("idle"); // idle | submitting | done
+
+  useEffect(() => {
+    if (localStorage.getItem("yc_signup_seen")) return;
+    const t = setTimeout(() => setOpen(true), 2500);
+    return () => clearTimeout(t);
+  }, []);
+
+  const dismiss = () => {
+    localStorage.setItem("yc_signup_seen", "1");
+    setOpen(false);
+  };
+
+  const submit = (e) => {
+    e.preventDefault();
+    if (!email) return;
+    setStatus("submitting");
+    fetch(SHEET_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email, phone, date: new Date().toISOString() }),
+    }).finally(() => {
+      setStatus("done");
+      localStorage.setItem("yc_signup_seen", "1");
+      setTimeout(() => setOpen(false), 2200);
+    });
+  };
+
+  if (!open) return null;
+
+  return (
+    <div className="signup-overlay" onClick={dismiss}>
+      <div className="signup-modal" onClick={(e) => e.stopPropagation()}>
+        <button className="signup-close" onClick={dismiss} aria-label="Close">✕</button>
+
+        {status === "done" ? (
+          <div className="signup-done">
+            <span className="signup-done-word">yur in.</span>
+            <p>We'll hit you when something drops.</p>
+          </div>
+        ) : (
+          <>
+            <div className="signup-header">
+              <span className="signup-logo">yur cooked<span className="signup-dot">.</span></span>
+            </div>
+            <h2 className="signup-heading">Yur first<br/><span className="it">to know.</span></h2>
+            <p className="signup-body">New drops, pop-ups, private dinners, and recipes before anyone else. No spam — just the good stuff.</p>
+            <form className="signup-form" onSubmit={submit}>
+              <input
+                className="signup-input"
+                type="text"
+                placeholder="First name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+              <input
+                className="signup-input"
+                type="email"
+                placeholder="Email *"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <input
+                className="signup-input"
+                type="tel"
+                placeholder="Phone (optional)"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+              />
+              <button className="signup-submit" type="submit" disabled={status === "submitting"}>
+                {status === "submitting" ? "Sending..." : "Count me in →"}
+              </button>
+            </form>
+            <p className="signup-fine">No spam. Unsubscribe anytime.</p>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+Object.assign(window, { Icon, Nav, Footer, Ticker, PromoBar, WatchSection, SignupModal });

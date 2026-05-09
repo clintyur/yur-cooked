@@ -1839,3 +1839,132 @@ button { font-family: inherit; cursor: pointer; }
   letter-spacing: .04em;
   text-transform: uppercase;
 }
+
+/* ---------- Signup Modal ---------- */
+.signup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  backdrop-filter: blur(4px);
+  animation: fade-in .35s ease;
+}
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+.signup-modal {
+  background: #fff;
+  width: 100%;
+  max-width: 480px;
+  padding: 48px 44px 40px;
+  position: relative;
+  animation: slide-up .4s cubic-bezier(.2,.8,.3,1);
+}
+@keyframes slide-up { from { transform: translateY(24px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.signup-close {
+  position: absolute;
+  top: 18px; right: 20px;
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: var(--muted);
+  cursor: pointer;
+  line-height: 1;
+  padding: 4px;
+  transition: color .2s;
+}
+.signup-close:hover { color: var(--ink); }
+.signup-header { margin-bottom: 24px; }
+.signup-logo {
+  font-family: "Caveat", cursive;
+  font-weight: 700;
+  font-size: 26px;
+  color: var(--ink);
+  filter: url(#hand);
+}
+.signup-dot {
+  display: inline-block;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  margin-left: 1px;
+  transform: translateY(-3px);
+  vertical-align: middle;
+}
+.signup-heading {
+  font-family: var(--serif);
+  font-size: clamp(36px, 6vw, 52px);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin: 0 0 16px;
+}
+.signup-body {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin: 0 0 28px;
+}
+.signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.signup-input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid var(--rule);
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--ink);
+  outline: none;
+  transition: border-color .2s;
+  letter-spacing: .03em;
+}
+.signup-input:focus { border-color: var(--ink); }
+.signup-input::placeholder { color: var(--muted); text-transform: uppercase; font-size: 11px; letter-spacing: .08em; }
+.signup-submit {
+  width: 100%;
+  padding: 15px;
+  background: var(--ink);
+  color: #fff;
+  border: none;
+  font-family: var(--sans);
+  font-size: 12px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 4px;
+  transition: background .2s, opacity .2s;
+}
+.signup-submit:hover { background: var(--accent); }
+.signup-submit:disabled { opacity: .6; cursor: not-allowed; }
+.signup-fine {
+  font-size: 11px;
+  color: var(--muted);
+  text-align: center;
+  margin: 14px 0 0;
+  letter-spacing: .04em;
+}
+.signup-done {
+  text-align: center;
+  padding: 20px 0;
+}
+.signup-done-word {
+  font-family: "Caveat", cursive;
+  font-size: 72px;
+  font-weight: 700;
+  display: block;
+  line-height: 1;
+  margin-bottom: 12px;
+  filter: url(#hand);
+}
+.signup-done p {
+  color: var(--muted);
+  font-size: 14px;
+  margin: 0;
+}

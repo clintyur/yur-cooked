@@ -89,6 +89,7 @@ function App() {
       <Page setPage={setPage}/>
       <Footer setPage={setPage}/>
 
+      <SignupModal/>
       <TweaksPanel title="Tweaks">
         <TweakSection label="Accent">
           <TweakColor label="Color" value={t.accent} options={["#b8442a","#3d4a2a","#6b1f1c","#c9921f","#1a1814"]} onChange={(v) => setTweak("accent", v)}/>
