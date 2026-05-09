@@ -684,7 +684,7 @@ function ShopPage() {
             <div className="eyebrow"><span className="dot"></span>The Goods</div>
             <h2 className="section-title">Shop.</h2>
           </div>
-          <p className="section-lede">A small line of things I actually wear and use in the kitchen. Made in small runs, built to last.</p>
+          <p className="section-lede">A small line of things I actually wear and use every day. Made in small production runs in the USA — built to last.</p>
         </div>
 
         <div className="cluster" style={{ borderTop: "1px solid var(--rule)", borderBottom: "1px solid var(--rule)", padding: "16px 0", margin: "24px 0 56px", justifyContent: "space-between" }}>
