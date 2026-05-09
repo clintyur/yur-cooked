@@ -941,7 +941,24 @@ button { font-family: inherit; cursor: pointer; }
   padding: clamp(60px, 8vw, 120px) 0;
 }
 @media (min-width: 880px) {
-  .about-story { grid-template-columns: 1fr 1.4fr; gap: 80px; }
+  .about-story { grid-template-columns: 1fr 1.4fr 280px; gap: 56px; }
+}
+.col-photos {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-self: start;
+}
+.cp-slot {
+  width: 100%;
+  aspect-ratio: 4/3;
+  overflow: hidden;
+  background: var(--cream-2);
+}
+.cp-slot image-slot {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 .about-story .col-meta {
   position: sticky;

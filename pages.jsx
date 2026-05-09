@@ -800,16 +800,13 @@ function AboutPage({ setPage }) {
             <p>I started cycling in Colorado, traveled to New York a few times, and knew immediately I had to live there. Signed a sublease, moved in August 2025. Best decision I've made. I did more private dinners in a few months than I had in years. New York cracked something back open in me that had gone quiet in Boulder.</p>
             <p>Now I'm here. Pop-ups planned for 2026 and 2027. An apron and knife roll dropping soon. Chef pants eventually. A bike ride across Europe somewhere in there. And a lot more food for a lot more people — because that's the whole point.</p>
           </div>
-        </div>
-      </section>
-
-      <section className="container">
-        <div className="about-gallery">
-          <div className="g a"><image-slot id="g1" placeholder="Hero kitchen shot"></image-slot></div>
-          <div className="g b"><image-slot id="g2" placeholder="Detail — herbs"></image-slot></div>
-          <div className="g c"><image-slot id="g3" placeholder="Detail — knife"></image-slot></div>
-          <div className="g d"><image-slot id="g4" placeholder="Plated dish"></image-slot></div>
-          <div className="g e"><image-slot id="g5" placeholder="Behind the scenes"></image-slot></div>
+          <div className="col-photos">
+            <div className="cp-slot"><image-slot id="g1" placeholder="Kitchen shot"></image-slot></div>
+            <div className="cp-slot"><image-slot id="g2" placeholder="Detail — herbs"></image-slot></div>
+            <div className="cp-slot"><image-slot id="g3" placeholder="Detail — knife"></image-slot></div>
+            <div className="cp-slot"><image-slot id="g4" placeholder="Plated dish"></image-slot></div>
+            <div className="cp-slot"><image-slot id="g5" placeholder="Behind the scenes"></image-slot></div>
+          </div>
         </div>
       </section>
 
