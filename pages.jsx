@@ -898,7 +898,7 @@ function ContactPage() {
               <div className="field-grid">
                 <div className="field">
                   <label>Date</label>
-                  <input ref={dateRef} type="text" placeholder="When?"/>
+                  <input ref={dateRef} type="date" placeholder="When?"/>
                 </div>
                 <div className="field">
                   <label>Guests</label>

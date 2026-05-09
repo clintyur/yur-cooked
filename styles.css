@@ -1118,6 +1118,18 @@ button { font-family: inherit; cursor: pointer; }
 .form input::placeholder, .form textarea::placeholder, .form select::placeholder {
   color: color-mix(in oklab, var(--ink) 35%, transparent);
 }
+.form input[type="date"] {
+  cursor: pointer;
+  width: 100%;
+}
+.form input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0.4;
+  cursor: pointer;
+  filter: var(--date-icon-filter, none);
+}
+[data-theme="dark"] .form input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
 .form .field-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
