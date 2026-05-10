@@ -790,7 +790,14 @@ function AboutPage({ setPage }) {
         <div className="about-story">
           <aside className="col-meta">
             <div>The Story</div>
-            <div style={{ marginTop: 12, fontFamily: "var(--serif)", fontStyle: "italic", fontSize: 28, textTransform: "none", letterSpacing: "-0.01em", color: "var(--ink)" }}>I.</div>
+            <div style={{ marginTop: 12, marginBottom: 20, fontFamily: "var(--serif)", fontStyle: "italic", fontSize: 28, textTransform: "none", letterSpacing: "-0.01em", color: "var(--ink)" }}>I.</div>
+            <div className="col-photos">
+              <div className="cp-slot"><image-slot id="g1" placeholder="Kitchen shot"></image-slot></div>
+              <div className="cp-slot"><image-slot id="g2" placeholder="Detail — herbs"></image-slot></div>
+              <div className="cp-slot"><image-slot id="g3" placeholder="Detail — knife"></image-slot></div>
+              <div className="cp-slot"><image-slot id="g4" placeholder="Plated dish"></image-slot></div>
+              <div className="cp-slot"><image-slot id="g5" placeholder="Behind the scenes"></image-slot></div>
+            </div>
           </aside>
           <div className="col-body">
             <p>Growing up in Houston, I learned to cook out of necessity. My mom became a teacher, so me and my sisters figured it out. Late dinners or cook yourself — that was the deal. I chose cook.</p>
@@ -799,13 +806,6 @@ function AboutPage({ setPage }) {
             <p>TikTok deleted my account. Hurt like hell. I moved to Instagram, went viral a couple times, built it back up almost to where it was. Met Troy, made some of the best content of my life. Getting banned on TikTok genuinely changed everything — I think it was supposed to happen.</p>
             <p>I started cycling in Colorado, traveled to New York a few times, and knew immediately I had to live there. Signed a sublease, moved in August 2025. Best decision I've made. I did more private dinners in a few months than I had in years. New York cracked something back open in me that had gone quiet in Boulder.</p>
             <p>Now I'm here. Pop-ups planned for 2026 and 2027. An apron and knife roll dropping soon. Chef pants eventually. A bike ride across Europe somewhere in there. And a lot more food for a lot more people — because that's the whole point.</p>
-          </div>
-          <div className="col-photos">
-            <div className="cp-slot"><image-slot id="g1" placeholder="Kitchen shot"></image-slot></div>
-            <div className="cp-slot"><image-slot id="g2" placeholder="Detail — herbs"></image-slot></div>
-            <div className="cp-slot"><image-slot id="g3" placeholder="Detail — knife"></image-slot></div>
-            <div className="cp-slot"><image-slot id="g4" placeholder="Plated dish"></image-slot></div>
-            <div className="cp-slot"><image-slot id="g5" placeholder="Behind the scenes"></image-slot></div>
           </div>
         </div>
       </section>

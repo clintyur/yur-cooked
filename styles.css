@@ -941,7 +941,7 @@ button { font-family: inherit; cursor: pointer; }
   padding: clamp(60px, 8vw, 120px) 0;
 }
 @media (min-width: 880px) {
-  .about-story { grid-template-columns: 1fr 1.4fr 280px; gap: 56px; }
+  .about-story { grid-template-columns: 1fr 1.8fr; gap: 64px; }
 }
 .col-photos {
   display: flex;
@@ -961,8 +961,6 @@ button { font-family: inherit; cursor: pointer; }
   display: block;
 }
 .about-story .col-meta {
-  position: sticky;
-  top: calc(var(--nav-h) + 32px);
   align-self: start;
   font-size: 11px;
   letter-spacing: 0.2em;
