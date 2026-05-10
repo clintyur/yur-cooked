@@ -629,7 +629,7 @@ function RecipeBookPage({ setPage, user, subscribed }) {
         </div>
       </section>
 
-      <Ticker items={[`${allRecipes.length} Recipes`, "Free to Read", "Updated Often", "Made in NYC", "Vol. 01"]}/>
+      <Ticker items={[`${allRecipes.length} Recipes`, "Free to Explore", "Updated Every Two Weeks", "Made in NYC", "Vol. 01"]}/>
 
       <section id="recipes" className="container section">
         <div className="section-head">
