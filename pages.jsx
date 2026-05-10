@@ -8,18 +8,8 @@ const GOOEY_WORDMARK = false;
 
 /* ============ HOME ============ */
 function HomePage({ setPage }) {
-  const [revealing, setRevealing] = React.useState(null);
   const go = (p) => (e) => { e.preventDefault(); setPage(p); window.scrollTo({ top: 0, behavior: "instant" }); };
-  const reveal = (p) => (e) => {
-    e.preventDefault();
-    if (revealing) return;
-    setRevealing(p);
-    setTimeout(() => {
-      setPage(p);
-      window.scrollTo({ top: 0, behavior: "instant" });
-      setRevealing(null);
-    }, 220);
-  };
+  const reveal = go;
   return (
     <div className="page">
       {/* Hero */}
@@ -88,7 +78,7 @@ function HomePage({ setPage }) {
           <a href="#" onClick={reveal("recipe")} className="preview">
             <div className="preview-img">
               <span className="badge">New</span>
-              <img src="images/recipe-preview-bg.jpg" alt="Recipes" style={{width:"100%",height:"100%",objectFit:"cover",display:"block",transform:"scale(1.08)",filter:revealing==="recipe"?"blur(0px)":"blur(6px)",transition:"filter 0.2s ease"}}/>
+              <img src="images/recipe-preview-bg.jpg" alt="Recipes" className="preview-bg-img"/>
             </div>
             <div className="preview-meta">
               <h3 className="preview-name">The <span className="it">Recipe Stash</span></h3>
@@ -99,7 +89,7 @@ function HomePage({ setPage }) {
           </a>
           <a href="#" onClick={reveal("shop")} className="preview">
             <div className="preview-img">
-              <img src="images/goods-preview.jpg" alt="The Goods" style={{width:"100%",height:"100%",objectFit:"cover",display:"block",transform:"scale(1.08)",filter:revealing==="shop"?"blur(0px)":"blur(6px)",transition:"filter 0.2s ease"}}/>
+              <img src="images/goods-preview.jpg" alt="The Goods" className="preview-bg-img"/>
             </div>
             <div className="preview-meta">
               <h3 className="preview-name">The <span className="it">Goods</span></h3>
@@ -110,7 +100,7 @@ function HomePage({ setPage }) {
           </a>
           <a href="#" onClick={reveal("about")} className="preview">
             <div className="preview-img">
-              <img src="images/story-preview.jpg" alt="The Story" style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"center top",display:"block",transform:"scale(1.08)",filter:revealing==="about"?"blur(0px)":"blur(6px)",transition:"filter 0.2s ease"}}/>
+              <img src="images/story-preview.jpg" alt="The Story" className="preview-bg-img" style={{objectPosition:"center top"}}/>
             </div>
             <div className="preview-meta">
               <h3 className="preview-name">The <span className="it">Story</span></h3>
