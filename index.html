@@ -42,8 +42,10 @@
 <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="image-slot.js"></script>
 <script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel" src="auth.jsx"></script>
 <script type="text/babel" src="components.jsx"></script>
 <script type="text/babel" src="pages.jsx"></script>
 
@@ -59,11 +61,33 @@ function App() {
   const [page, setPage] = useState("home");
   const [promo, setPromo] = useState(true);
   const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+  const [user, setUser] = useState(null);
+  const [subscribed, setSubscribed] = useState(false);
+  const [authReady, setAuthReady] = useState(false);
 
   useEffect(() => {
     document.documentElement.style.setProperty("--accent", t.accent);
     document.documentElement.setAttribute("data-theme", t.theme);
   }, [t.accent, t.theme]);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+      if (session?.user) checkSubscription(session.user.id);
+      setAuthReady(true);
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+      if (session?.user) checkSubscription(session.user.id);
+      else setSubscribed(false);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const checkSubscription = async (uid) => {
+    const { data } = await supabase.from("subscribers").select("subscribed, discount_code").eq("id", uid).single();
+    setSubscribed(data?.subscribed === true);
+  };
 
   const Page = {
     home: HomePage,
@@ -78,18 +102,22 @@ function App() {
     home: "01 Home",
     recipe: "02 Recipes",
     shop: "03 Shop",
+    subscribe: "Subscribe",
     about: "04 About",
     contact: "05 Contact",
   }[page];
 
+  const authProps = { user, subscribed, setUser };
+
   return (
     <div data-screen-label={screenLabel} className={promo ? "has-promo" : ""}>
       {promo && <PromoBar onClose={() => setPromo(false)} setPage={setPage}/>}
-      <Nav page={page} setPage={setPage}/>
-      <Page setPage={setPage}/>
+      <Nav page={page} setPage={setPage} user={user} setPage={setPage}/>
+      <Page setPage={setPage} {...authProps}/>
       <Footer setPage={setPage}/>
 
       <SignupModal/>
+      <AuthModal/>
       <TweaksPanel title="Tweaks">
         <TweakSection label="Accent">
           <TweakColor label="Color" value={t.accent} options={["#b8442a","#3d4a2a","#6b1f1c","#c9921f","#1a1814"]} onChange={(v) => setTweak("accent", v)}/>

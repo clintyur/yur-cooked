@@ -40,7 +40,7 @@ const Icon = {
 };
 
 /* ============ Nav ============ */
-function Nav({ page, setPage }) {
+function Nav({ page, setPage, user }) {
   const [open, setOpen] = useState(false);
   useEffect(() => { setOpen(false); }, [page]);
   const links = [
@@ -51,6 +51,7 @@ function Nav({ page, setPage }) {
     ["contact", "Contact"],
   ];
   const go = (p) => (e) => { e.preventDefault(); setPage(p); window.scrollTo({ top: 0, behavior: "instant" }); };
+  const logout = async (e) => { e.preventDefault(); await supabase.auth.signOut(); };
   return (
     <>
       <header className="nav">
@@ -62,6 +63,10 @@ function Nav({ page, setPage }) {
             {links.map(([k, l]) => (
               <a key={k} href="#" onClick={go(k)} className={"nav-link" + (page === k ? " active" : "")}>{l}</a>
             ))}
+            {user
+              ? <a href="#" onClick={logout} className="nav-link">Log Out</a>
+              : <a href="#" onClick={(e) => { e.preventDefault(); openAuthModal("login"); }} className="nav-link">Log In</a>
+            }
           </nav>
           <button className={"nav-burger" + (open ? " open" : "")} onClick={() => setOpen(!open)} aria-label="Menu">
             <span></span><span></span>
@@ -73,6 +78,10 @@ function Nav({ page, setPage }) {
         {links.map(([k, l]) => (
           <a key={k} href="#" onClick={go(k)} className="nav-link">{l}</a>
         ))}
+        {user
+          ? <a href="#" onClick={logout} className="nav-link">Log Out</a>
+          : <a href="#" onClick={(e) => { e.preventDefault(); openAuthModal("login"); }} className="nav-link">Log In</a>
+        }
         <div className="mobile-menu-foot">
           <a href="https://instagram.com/clintyurr" target="_blank" rel="noreferrer">Instagram</a>
           <a href="https://youtube.com/@ClintYur" target="_blank" rel="noreferrer">YouTube</a>

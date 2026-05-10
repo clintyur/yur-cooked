@@ -545,10 +545,14 @@ const RECIPES = [
   },
 ];
 
-function RecipeBookPage({ setPage }) {
+function RecipeBookPage({ setPage, user, subscribed }) {
   const [openRecipe, setOpenRecipe] = useStateP(null);
   const [tab, setTab] = useStateP("ingredients");
-  const openDetail = (r) => { setOpenRecipe(r); setTab("ingredients"); };
+  const openDetail = (r) => {
+    if (!user) { openAuthModal("login"); return; }
+    if (!subscribed) { setPage("subscribe"); window.scrollTo({ top: 0, behavior: "instant" }); return; }
+    setOpenRecipe(r); setTab("ingredients");
+  };
   return (
     <div className="page">
       <section className="book-hero">
@@ -586,11 +590,22 @@ function RecipeBookPage({ setPage }) {
           <p className="section-lede">{RECIPES.length} pulled from the index — the ones I'd hand a friend if they asked where to start.</p>
         </div>
 
+        {!subscribed && (
+          <div className="paywall">
+            <h3>Full recipes are for subscribers.</h3>
+            <p>Subscribe to unlock every recipe, method, and ingredient list. {user ? "Your account isn't subscribed yet." : "Already subscribed? Log in."}</p>
+            <div className="paywall-btns">
+              {!user && <button className="btn" onClick={() => openAuthModal("login")}>Log In</button>}
+              <button className="btn ghost" onClick={() => { setPage("subscribe"); window.scrollTo({ top:0, behavior:"instant" }); }}>Subscribe — from $3.99/mo</button>
+            </div>
+          </div>
+        )}
+
         <div className="recipe-grid">
           {RECIPES.map((r, i) => (
             <div key={i} className={"recipe" + (r.steps ? " recipe--clickable" : "")}
                  onClick={r.steps ? () => openDetail(r) : undefined}>
-              <div className="recipe-img">
+              <div className="recipe-img" style={!subscribed ? {filter:"blur(3px)",pointerEvents:"none"} : {}}>
                 {(r.imgs || r.img)
                   ? <img src={r.imgs ? r.imgs[0] : r.img} alt={r.name} style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}/>
                   : <image-slot id={"recipe-" + r.n} placeholder={r.name}></image-slot>
@@ -600,7 +615,7 @@ function RecipeBookPage({ setPage }) {
               <h3 className="recipe-name">{r.name}</h3>
               <div className="recipe-tags">
                 {r.tags.map((t, j) => <span key={j} className="recipe-tag">{t}</span>)}
-                {r.steps && <span className="recipe-tag recipe-tag--cta">Read Recipe →</span>}
+                {r.steps && <span className="recipe-tag recipe-tag--cta">{subscribed ? "Read Recipe →" : "🔒 Subscribe to Read"}</span>}
               </div>
             </div>
           ))}
