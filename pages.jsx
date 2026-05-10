@@ -769,9 +769,9 @@ function AboutPage({ setPage }) {
         <div className="about-hero">
           <div>
             <div className="eyebrow" style={{ marginBottom: 16 }}><span className="dot"></span>About</div>
-            <h1>The kid who learned to cook because <span className="it">someone had to.</span></h1>
+            <h1>Cook. Create. <span className="it">Eat good.</span></h1>
             <p style={{ fontSize: 18, color: "var(--ink-2)", marginTop: 24, maxWidth: "44ch", lineHeight: 1.5 }}>
-              Now a private chef and creator based in New York, sharing recipes, goods, and the long version of the story.
+              Private chef and creator out of New York. Houston raised.
             </p>
           </div>
           <div className="about-hero-img">
@@ -798,12 +798,13 @@ function AboutPage({ setPage }) {
             </div>
           </aside>
           <div className="col-body">
-            <p>Growing up in Houston, I learned to cook out of necessity. My mom became a teacher, so me and my sisters figured it out. Late dinners or cook yourself — that was the deal. I chose cook.</p>
-            <p>Then my friends and I started smoking weed, and suddenly nobody wanted Taco Bell. They wanted whatever I was making. That was Houston, freshman year of high school. That's where it started.</p>
-            <p>I went to college, dropped out after two years, moved back home, then packed up and moved to Boulder, Colorado. Three of my friends convinced me to start posting my food online. So I did what I always did — hit the Puffco, started cooking, pointed a camera at it. People watched. Then a lot of people watched.</p>
-            <p>TikTok deleted my account. Hurt like hell. I moved to Instagram, went viral a couple times, built it back up almost to where it was. Met Troy, made some of the best content of my life. Getting banned on TikTok genuinely changed everything — I think it was supposed to happen.</p>
-            <p>I started cycling in Colorado, traveled to New York a few times, and knew immediately I had to live there. Signed a sublease, moved in August 2025. Best decision I've made. I did more private dinners in a few months than I had in years. New York cracked something back open in me that had gone quiet in Boulder.</p>
-            <p>Now I'm here. Pop-ups planned for 2026 and 2027. An apron and knife roll dropping soon. Chef pants eventually. A bike ride across Europe somewhere in there. And a lot more food for a lot more people — because that's the whole point.</p>
+            <p>Growing up in Houston, I learned to cook because somebody had to. My mom became a teacher, late dinners were the default, and me and my sisters just started figuring it out together. We'd all cook for each other. That's just how it was.</p>
+            <p>Then me and my friends started smoking and suddenly Taco Bell wasn't hitting the same. I'd just start cooking for everybody. That's really where it started — freshman year of high school, feeding my friends out of whatever was in the kitchen.</p>
+            <p>Dropped out of college after two years. Moved to Boulder. Three of my friends kept telling me to post my food online, so I did. Hit the Puffco, started cooking, pointed a camera at it. People watched. Then a whole lot of people watched.</p>
+            <p>TikTok deleted my account. Hurt. But I moved to Instagram, went viral a couple times, built it back. Then Puffco reached out. I'd been hitting the Puffco since before any of this — it was just part of how I cooked. So getting sponsored by them was a big moment for me. Like, this is real now. That was the first time I felt like everything I was doing was actually being seen.</p>
+            <p>That's when I met Brady Stark. He became my videographer, one of my closest friends, and the person behind the camera on the big projects. Brady filmed and edited everything you see on YouTube. Then I met Troy. Between Brady and Troy, we made some of the best content of my life. Getting banned honestly changed everything — I think it had to happen that way.</p>
+            <p>Moved to New York last summer. Best decision I've made. The city opened everything back up. Private dinners, pop-ups, more content, better food.</p>
+            <p>Now I'm just building. Apron and knife roll dropping soon. Pop-ups in 2026. Chef pants. A bike ride across Europe. And a lot more food for a lot more people — because that's always been the whole point.</p>
           </div>
         </div>
         <div className="about-photos-below">
