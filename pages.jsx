@@ -792,9 +792,9 @@ function AboutPage({ setPage }) {
             <div>The Story</div>
             <div style={{ marginTop: 12, marginBottom: 20, fontFamily: "var(--serif)", fontStyle: "italic", fontSize: 28, textTransform: "none", letterSpacing: "-0.01em", color: "var(--ink)" }}>I.</div>
             <div className="col-photos">
-              <div className="cp-slot"><img src="images/book-hero.jpg" alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/></div>
-              <div className="cp-slot"><img src="images/jerk-chicken-01.jpg" alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/></div>
-              <div className="cp-slot"><img src="images/duck-fat-potatoes.jpg" alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/></div>
+              <div className="cp-slot"><img src="images/about-img_6672-2.jpg" alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/></div>
+              <div className="cp-slot"><img src="images/about-img_6817.jpg" alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/></div>
+              <div className="cp-slot"><img src="images/about-img_6789.jpg" alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/></div>
             </div>
           </aside>
           <div className="col-body">
@@ -807,8 +807,8 @@ function AboutPage({ setPage }) {
           </div>
         </div>
         <div className="about-photos-below">
-          <div className="cp-slot"><img src="images/watermelon-salad.jpg" alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/></div>
-          <div className="cp-slot"><img src="images/jerk-chicken-02.jpg" alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/></div>
+          <div className="cp-slot"><img src="images/about-img_6519-2.jpg" alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/></div>
+          <div className="cp-slot"><img src="images/about-img_1989-3.jpg" alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/></div>
         </div>
       </section>
 
