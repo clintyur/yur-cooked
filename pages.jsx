@@ -548,7 +548,7 @@ const RECIPES = [
     name: "Famous Fried Chicken",
     tags: ["Mains", "Fried"],
     serves: "2–4",
-    img: "images/fried-chicken.jpg",
+    imgs: ["images/fried-chicken-01.jpg", "images/fried-chicken-02.jpg", "images/fried-chicken-03.jpg", "images/fried-chicken-04.jpg", "images/fried-chicken-05.jpg"],
     ingredients: [
       { section: "The Marinade" },
       { name: "Chicken thighs",       amount: "4–6 pieces (or any cut)",    img: "images/ingredients/chicken.png" },
