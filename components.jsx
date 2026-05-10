@@ -40,7 +40,7 @@ const Icon = {
 };
 
 /* ============ Nav ============ */
-function Nav({ page, setPage, user }) {
+function Nav({ page, setPage, user, isAdmin }) {
   const [open, setOpen] = useState(false);
   useEffect(() => { setOpen(false); }, [page]);
   const links = [
@@ -63,6 +63,9 @@ function Nav({ page, setPage, user }) {
             {links.map(([k, l]) => (
               <a key={k} href="#" onClick={go(k)} className={"nav-link" + (page === k ? " active" : "")}>{l}</a>
             ))}
+            {isAdmin && (
+              <a href="#" onClick={go("admin")} className={"nav-link" + (page === "admin" ? " active" : "")} style={{ color: "var(--accent)" }}>Admin</a>
+            )}
             {user
               ? <a href="#" onClick={logout} className="nav-link">Log Out</a>
               : <a href="#" onClick={(e) => { e.preventDefault(); openAuthModal("login"); }} className="nav-link">Log In</a>
@@ -78,6 +81,9 @@ function Nav({ page, setPage, user }) {
         {links.map(([k, l]) => (
           <a key={k} href="#" onClick={go(k)} className="nav-link">{l}</a>
         ))}
+        {isAdmin && (
+          <a href="#" onClick={go("admin")} className="nav-link" style={{ color: "var(--accent)" }}>Admin</a>
+        )}
         {user
           ? <a href="#" onClick={logout} className="nav-link">Log Out</a>
           : <a href="#" onClick={(e) => { e.preventDefault(); openAuthModal("login"); }} className="nav-link">Log In</a>
