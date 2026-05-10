@@ -43,6 +43,10 @@ const Icon = {
 function Nav({ page, setPage, user, isAdmin }) {
   const [open, setOpen] = useState(false);
   useEffect(() => { setOpen(false); }, [page]);
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [open]);
   const links = [
     ["recipe", "Recipes"],
     ["shop", "Shop"],
