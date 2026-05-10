@@ -58,6 +58,8 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "theme": "light"
 }/*EDITMODE-END*/;
 
+const ADMIN_EMAIL = "chefclintt@gmail.com";
+
 function App() {
   const [page, setPage] = useState("home");
   const [promo, setPromo] = useState(true);
@@ -74,22 +76,35 @@ function App() {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-      if (session?.user) checkSubscription(session.user.id);
+      const u = session?.user ?? null;
+      setUser(u);
+      if (u) {
+        const admin = u.email === ADMIN_EMAIL;
+        setIsAdmin(admin);
+        if (admin) setSubscribed(true);
+        else checkSubscription(u.id);
+      }
       setAuthReady(true);
     });
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-      if (session?.user) checkSubscription(session.user.id);
-      else { setSubscribed(false); setIsAdmin(false); }
+      const u = session?.user ?? null;
+      setUser(u);
+      if (u) {
+        const admin = u.email === ADMIN_EMAIL;
+        setIsAdmin(admin);
+        if (admin) setSubscribed(true);
+        else checkSubscription(u.id);
+      } else {
+        setSubscribed(false);
+        setIsAdmin(false);
+      }
     });
     return () => subscription.unsubscribe();
   }, []);
 
   const checkSubscription = async (uid) => {
-    const { data } = await supabase.from("subscribers").select("subscribed, discount_code, is_admin").eq("id", uid).single();
+    const { data } = await supabase.from("subscribers").select("subscribed, discount_code").eq("id", uid).single();
     setSubscribed(data?.subscribed === true);
-    setIsAdmin(data?.is_admin === true);
   };
 
   const Page = {
