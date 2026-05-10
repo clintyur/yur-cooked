@@ -49,7 +49,7 @@ function HomePage({ setPage }) {
       </section>
 
       {/* Ticker */}
-      <Ticker items={["The Recipes", "Free to Read", `${RECIPES.length} & Counting`, "Shop the Goods", "Private Dinners", "Vol. 01"]}/>
+      <Ticker items={["The Recipes", "Free to Explore", `${RECIPES.length} & Counting`, "Shop the Goods", "Private Dinners", "Vol. 01"]}/>
 
       {/* Intro / quote */}
       <section className="container">
