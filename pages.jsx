@@ -775,7 +775,7 @@ function AboutPage({ setPage }) {
             </p>
           </div>
           <div className="about-hero-img">
-            <image-slot id="about-portrait" placeholder="Portrait of Clint"></image-slot>
+            <img src="images/about-hero.jpg" alt="Clint cooking" style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"center top"}}/>
           </div>
         </div>
       </section>
