@@ -960,6 +960,15 @@ button { font-family: inherit; cursor: pointer; }
   height: 100%;
   display: block;
 }
+.about-photos-below {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 8px;
+}
+.about-photos-below .cp-slot {
+  aspect-ratio: 16/9;
+}
 .about-story .col-meta {
   align-self: start;
   font-size: 11px;
