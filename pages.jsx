@@ -808,7 +808,7 @@ function AboutPage({ setPage }) {
         </div>
         <div className="about-photos-below">
           <div className="cp-slot"><img src="images/about-img_1625-3.jpg" alt="" style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"center center"}}/></div>
-          <div className="cp-slot"><img src="images/about-img_1326.jpg" alt="" style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"center top"}}/></div>
+          <div className="cp-slot"><img src="images/about-img_6597.jpg" alt="" style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"center top"}}/></div>
         </div>
       </section>
 
