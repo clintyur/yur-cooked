@@ -665,42 +665,23 @@ function RecipeBookPage({ setPage, user, subscribed }) {
         {openRecipe && (
           <div className="modal recipe-modal" onClick={(e) => e.stopPropagation()}>
             <button className="modal-close" onClick={() => setOpenRecipe(null)}><Icon.close/></button>
-            <div className="recipe-modal-img">
-              {(() => {
-                const imgs = openRecipe.imgs || (openRecipe.img ? [openRecipe.img] : []);
-                const count = imgs.length;
-                if (count === 0) return null;
-                if (count === 1) return (
-                  <div className="recipe-modal-img--single">
-                    <img src={imgs[0]} alt={openRecipe.name}/>
-                  </div>
-                );
-                if (count === 2) return (
-                  <div className="recipe-modal-img--grid cols-2">
-                    {imgs.map((src, i) => <img key={i} src={src} alt={openRecipe.name}/>)}
-                  </div>
-                );
-                if (count === 3) return (
-                  <div className="recipe-modal-img--grid cols-3">
-                    <div className="grid-main"><img src={imgs[0]} alt={openRecipe.name}/></div>
-                    <div className="grid-side"><img src={imgs[1]} alt={openRecipe.name}/></div>
-                    <div className="grid-side"><img src={imgs[2]} alt={openRecipe.name}/></div>
-                  </div>
-                );
-                if (count === 4) return (
-                  <div className="recipe-modal-img--grid cols-4">
-                    {imgs.map((src, i) => <img key={i} src={src} alt={openRecipe.name}/>)}
-                  </div>
-                );
-                // 5+: first image full width, then pairs below
+            {(() => {
+              const imgs = openRecipe.imgs || (openRecipe.img ? [openRecipe.img] : []);
+              const count = imgs.length;
+              if (count === 3 || count === 5) {
                 return (
-                  <div className="recipe-modal-img--grid cols-5">
-                    <div className="grid-main"><img src={imgs[0]} alt={openRecipe.name}/></div>
-                    {imgs.slice(1).map((src, i) => <div key={i} className="grid-side"><img src={src} alt={openRecipe.name}/></div>)}
+                  <div className={`recipe-modal-img count-${count}`}>
+                    <img className="img-full" src={imgs[0]} alt={openRecipe.name}/>
+                    {imgs.slice(1).map((src, i) => <img key={i} src={src} alt={openRecipe.name}/>)}
                   </div>
                 );
-              })()}
-            </div>
+              }
+              return (
+                <div className={`recipe-modal-img count-${Math.min(count, 4)}`}>
+                  {imgs.map((src, i) => <img key={i} src={src} alt={openRecipe.name}/>)}
+                </div>
+              );
+            })()}
             <div className="modal-info recipe-modal-info">
               <div className="eyebrow"><span className="dot"></span>{openRecipe.tags.join(" · ")}{openRecipe.serves && <span style={{marginLeft:12}}>Serves {openRecipe.serves}</span>}</div>
               <h2 style={{fontFamily:"var(--display)",fontSize:"clamp(22px,3vw,36px)",lineHeight:1.05,letterSpacing:"-0.03em",fontWeight:800,textTransform:"uppercase",margin:"6px 0 0"}}>

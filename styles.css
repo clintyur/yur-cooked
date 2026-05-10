@@ -1281,42 +1281,41 @@ button { font-family: inherit; cursor: pointer; }
   overflow: hidden;
 }
 
-/* Recipe modal — single scroll column */
+/* Recipe modal — two column, photos left, recipe right */
 .recipe-modal {
-  grid-template-columns: 1fr !important;
-  max-width: 780px !important;
-  max-height: 90vh !important;
-  overflow-y: auto !important;
+  grid-template-columns: 1fr 1fr !important;
+  max-width: 1160px !important;
+  max-height: 92vh !important;
+  overflow: hidden !important;
 }
 .recipe-modal-img {
-  width: 100%;
+  overflow-y: auto;
+  background: #111;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3px;
+  align-content: start;
 }
-.recipe-modal-img--single img {
+.recipe-modal-img img {
   width: 100%;
-  max-height: 520px;
+  aspect-ratio: 1 / 1;
   object-fit: cover;
   display: block;
 }
-.recipe-modal-img--grid {
-  display: grid;
-  gap: 3px;
-}
-.recipe-modal-img--grid.cols-1 img { width: 100%; max-height: 520px; object-fit: cover; display: block; }
-.recipe-modal-img--grid.cols-2 { grid-template-columns: 1fr 1fr; }
-.recipe-modal-img--grid.cols-2 img { width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block; }
-.recipe-modal-img--grid.cols-3 { grid-template-columns: 1fr 1fr; }
-.recipe-modal-img--grid.cols-3 .grid-main { grid-column: 1 / -1; }
-.recipe-modal-img--grid.cols-3 .grid-main img { width: 100%; max-height: 400px; object-fit: cover; display: block; }
-.recipe-modal-img--grid.cols-3 .grid-side img { width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block; }
-.recipe-modal-img--grid.cols-4 { grid-template-columns: 1fr 1fr; }
-.recipe-modal-img--grid.cols-4 img { width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block; }
-.recipe-modal-img--grid.cols-5 { grid-template-columns: 1fr 1fr; }
-.recipe-modal-img--grid.cols-5 .grid-main { grid-column: 1 / -1; }
-.recipe-modal-img--grid.cols-5 .grid-main img { width: 100%; max-height: 400px; object-fit: cover; display: block; }
-.recipe-modal-img--grid.cols-5 .grid-side img { width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block; }
+/* 1 photo — full width */
+.recipe-modal-img.count-1 { grid-template-columns: 1fr; }
+.recipe-modal-img.count-1 img { aspect-ratio: 3/4; }
+/* 2 photos — stacked full width */
+.recipe-modal-img.count-2 { grid-template-columns: 1fr; }
+.recipe-modal-img.count-2 img { aspect-ratio: 4/3; }
+/* 3 photos — first spans both cols */
+.recipe-modal-img.count-3 .img-full { grid-column: 1 / -1; aspect-ratio: 16/9; }
+/* 4 photos — 2x2 */
+/* 5 photos — first spans both, then 2x2 */
+.recipe-modal-img.count-5 .img-full { grid-column: 1 / -1; aspect-ratio: 16/9; }
 .recipe-modal-info {
-  padding: 32px 40px 48px !important;
-  overflow: visible !important;
+  overflow-y: auto;
+  padding: 36px 40px 48px !important;
 }
 .modal-img image-slot { width: 100%; height: 100%; }
 .modal-info {
@@ -1603,7 +1602,6 @@ button { font-family: inherit; cursor: pointer; }
   border-color: var(--accent);
 }
 
-/* recipe-modal overrides are handled above */
 
 /* tabs */
 .recipe-tabs {
