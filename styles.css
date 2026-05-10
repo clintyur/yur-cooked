@@ -1285,10 +1285,13 @@ button { font-family: inherit; cursor: pointer; }
 .recipe-modal {
   grid-template-columns: 1fr 1fr !important;
   max-width: 1160px !important;
+  height: 92vh !important;
   max-height: 92vh !important;
   overflow: hidden !important;
+  align-items: stretch;
 }
 .recipe-modal-img {
+  height: 100%;
   overflow-y: auto;
   background: #111;
   display: grid;
@@ -1310,10 +1313,10 @@ button { font-family: inherit; cursor: pointer; }
 .recipe-modal-img.count-2 img { aspect-ratio: 4/3; }
 /* 3 photos — first spans both cols */
 .recipe-modal-img.count-3 .img-full { grid-column: 1 / -1; aspect-ratio: 16/9; }
-/* 4 photos — 2x2 */
 /* 5 photos — first spans both, then 2x2 */
 .recipe-modal-img.count-5 .img-full { grid-column: 1 / -1; aspect-ratio: 16/9; }
 .recipe-modal-info {
+  height: 100%;
   overflow-y: auto;
   padding: 36px 40px 48px !important;
 }
