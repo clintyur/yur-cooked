@@ -591,6 +591,15 @@ const RECIPES = [
 function RecipeBookPage({ setPage, user, subscribed }) {
   const [openRecipe, setOpenRecipe] = useStateP(null);
   const [tab, setTab] = useStateP("ingredients");
+  const [dbRecipes, setDbRecipes] = useStateP([]);
+
+  useEffectP(() => {
+    supabase.from("recipes").select("*").eq("published", true).order("created_at", { ascending: true })
+      .then(({ data }) => { if (data) setDbRecipes(data); });
+  }, []);
+
+  const allRecipes = [...RECIPES, ...dbRecipes];
+
   const openDetail = (r) => {
     setOpenRecipe(r); setTab("ingredients");
   };
@@ -613,14 +622,14 @@ function RecipeBookPage({ setPage, user, subscribed }) {
             <a href="#" onClick={(e) => { e.preventDefault(); setPage && setPage("subscribe"); }} className="btn ghost">Subscribe — from $3.99/mo</a>
           </div>
           <div className="book-stats">
-            <div className="stat"><span className="num">{RECIPES.length}</span><span className="lbl">Recipes</span></div>
+            <div className="stat"><span className="num">{allRecipes.length}</span><span className="lbl">Recipes</span></div>
             <div className="stat"><span className="num">∞</span><span className="lbl">Re-cooks</span></div>
             <div className="stat"><span className="num">$0</span><span className="lbl">To read</span></div>
           </div>
         </div>
       </section>
 
-      <Ticker items={[`${RECIPES.length} Recipes`, "Free to Read", "Updated Often", "Made in NYC", "Vol. 01"]}/>
+      <Ticker items={[`${allRecipes.length} Recipes`, "Free to Read", "Updated Often", "Made in NYC", "Vol. 01"]}/>
 
       <section id="recipes" className="container section">
         <div className="section-head">
@@ -628,11 +637,11 @@ function RecipeBookPage({ setPage, user, subscribed }) {
             <div className="eyebrow"><span className="dot"></span>The Index</div>
             <h2 className="section-title">A few of my <span className="it">favorites.</span></h2>
           </div>
-          <p className="section-lede">{RECIPES.length} pulled from the index — the ones I'd hand a friend if they asked where to start.</p>
+          <p className="section-lede">{allRecipes.length} pulled from the index — the ones I'd hand a friend if they asked where to start.</p>
         </div>
 
         <div className="recipe-grid">
-          {RECIPES.map((r, i) => (
+          {allRecipes.map((r, i) => (
             <div key={i} className={"recipe" + (r.steps ? " recipe--clickable" : "")}
                  onClick={r.steps ? () => openDetail(r) : undefined}>
               <div className="recipe-img">
