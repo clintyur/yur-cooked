@@ -2419,3 +2419,127 @@ button { font-family: inherit; cursor: pointer; }
   .recipe-form { padding: 20px; }
   .recipe-form-row { flex-direction: column; }
 }
+
+/* ============================================================
+   MOBILE — comprehensive fixes (max-width: 719px)
+   ============================================================ */
+@media (max-width: 719px) {
+
+  /* ── Modal — slide up from bottom like a sheet ── */
+  .modal-bg {
+    padding: 0;
+    align-items: flex-end;
+  }
+  .modal {
+    max-height: 92vh;
+    width: 100%;
+    transform: translateY(48px);
+    overflow: auto;
+  }
+  .modal-bg.open .modal { transform: translateY(0); }
+  .modal-close {
+    top: 12px;
+    right: 12px;
+    width: 36px;
+    height: 36px;
+  }
+
+  /* ── Recipe modal — stack vertical on mobile ── */
+  .recipe-modal {
+    grid-template-columns: 1fr !important;
+    height: 92vh !important;
+    max-height: 92vh !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  /* Photos become a horizontal swipeable strip */
+  .recipe-modal-img {
+    display: flex !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    height: 260px !important;
+    flex-shrink: 0;
+    gap: 3px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    grid-template-columns: unset !important;
+  }
+  .recipe-modal-img img {
+    height: 260px !important;
+    width: 260px !important;
+    aspect-ratio: unset !important;
+    flex-shrink: 0;
+    object-fit: cover !important;
+    scroll-snap-align: start;
+  }
+  /* Single photo — full width */
+  .recipe-modal-img.count-1 img {
+    width: 100% !important;
+  }
+  .recipe-modal-img .img-full {
+    width: 100% !important;
+    grid-column: unset !important;
+  }
+
+  /* Recipe info — fill remaining height and scroll */
+  .recipe-modal-info {
+    flex: 1;
+    height: auto !important;
+    overflow-y: auto !important;
+    padding: 24px 20px 40px !important;
+  }
+
+  /* ── About page — hide sidebar photos on mobile ── */
+  /* (photos-below still show, so nothing is lost) */
+  .col-photos { display: none; }
+  .about-story .col-meta { display: none; }
+
+  /* ── Hero — tighten up top bar ── */
+  .hero-top { font-size: 10px; letter-spacing: 0.12em; }
+
+  /* ── Book hero — image shorter on mobile ── */
+  .book-hero-img { min-height: 45vh; }
+  .book-hero-info { padding: 32px 24px 48px; }
+  .book-stats { gap: 20px; }
+
+  /* ── Recipe detail — less padding ── */
+  .recipe-modal-info .eyebrow { font-size: 10px; }
+
+  /* ── Clusters / button groups — wrap on mobile ── */
+  .cluster { flex-wrap: wrap; }
+  .hero-content .cluster { gap: 10px; }
+  .hero-content .cluster .btn { font-size: 11px; padding: 12px 18px; }
+
+  /* ── Promo bar — shrink text ── */
+  .promo { font-size: 11px; padding: 9px var(--gutter); }
+  .promo-close { flex-shrink: 0; }
+
+  /* ── Section padding ── */
+  .section { padding: clamp(48px, 8vw, 80px) 0; }
+
+  /* ── Auth modal ── */
+  .auth-modal { padding: 28px 20px 32px; }
+
+  /* ── Subscribe page ── */
+  .sub-card { padding: 28px 20px 24px; }
+
+  /* ── Contact form ── */
+  .dp-cal { width: 100%; }
+
+  /* ── About photos below — single column on small screens ── */
+  .about-photos-below { grid-template-columns: 1fr; }
+
+  /* ── Admin ── */
+  .admin-hero { padding: 60px 0 32px; }
+  .admin-hero-title { font-size: clamp(48px, 12vw, 80px); }
+  .admin-kpis { grid-template-columns: 1fr 1fr; }
+  .admin-kpi { padding: 16px; }
+  .admin-kpi-val { font-size: clamp(28px, 8vw, 48px); }
+  .admin-table th, .admin-table td { padding: 12px 14px; }
+  .admin-search { width: 100%; }
+  .recipe-form { padding: 20px; }
+  .recipe-form-row { flex-direction: column; }
+}
