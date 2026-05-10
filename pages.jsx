@@ -592,8 +592,6 @@ function RecipeBookPage({ setPage, user, subscribed }) {
   const [openRecipe, setOpenRecipe] = useStateP(null);
   const [tab, setTab] = useStateP("ingredients");
   const openDetail = (r) => {
-    if (!user) { openAuthModal("login"); return; }
-    if (!subscribed) { setPage("subscribe"); window.scrollTo({ top: 0, behavior: "instant" }); return; }
     setOpenRecipe(r); setTab("ingredients");
   };
   return (
@@ -633,22 +631,11 @@ function RecipeBookPage({ setPage, user, subscribed }) {
           <p className="section-lede">{RECIPES.length} pulled from the index — the ones I'd hand a friend if they asked where to start.</p>
         </div>
 
-        {!subscribed && (
-          <div className="paywall">
-            <h3>Full recipes are for subscribers.</h3>
-            <p>Subscribe to unlock every recipe, method, and ingredient list. {user ? "Your account isn't subscribed yet." : "Already subscribed? Log in."}</p>
-            <div className="paywall-btns">
-              {!user && <button className="btn" onClick={() => openAuthModal("login")}>Log In</button>}
-              <button className="btn ghost" onClick={() => { setPage("subscribe"); window.scrollTo({ top:0, behavior:"instant" }); }}>Subscribe — from $3.99/mo</button>
-            </div>
-          </div>
-        )}
-
         <div className="recipe-grid">
           {RECIPES.map((r, i) => (
             <div key={i} className={"recipe" + (r.steps ? " recipe--clickable" : "")}
                  onClick={r.steps ? () => openDetail(r) : undefined}>
-              <div className="recipe-img" style={!subscribed ? {filter:"blur(3px)",pointerEvents:"none"} : {}}>
+              <div className="recipe-img">
                 {(r.imgs || r.img)
                   ? <img src={r.imgs ? r.imgs[0] : r.img} alt={r.name} style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}/>
                   : <image-slot id={"recipe-" + r.n} placeholder={r.name}></image-slot>
@@ -658,7 +645,7 @@ function RecipeBookPage({ setPage, user, subscribed }) {
               <h3 className="recipe-name">{r.name}</h3>
               <div className="recipe-tags">
                 {r.tags.map((t, j) => <span key={j} className="recipe-tag">{t}</span>)}
-                {r.steps && <span className="recipe-tag recipe-tag--cta">{subscribed ? "Read Recipe →" : "🔒 Subscribe to Read"}</span>}
+                {r.steps && <span className="recipe-tag recipe-tag--cta">View Recipe →</span>}
               </div>
             </div>
           ))}
@@ -684,45 +671,58 @@ function RecipeBookPage({ setPage, user, subscribed }) {
                 {openRecipe.name}
               </h2>
 
-              {openRecipe.ingredients && (
-                <div className="recipe-tabs">
-                  <button className={"recipe-tab" + (tab === "ingredients" ? " active" : "")} onClick={() => setTab("ingredients")}>Ingredients</button>
-                  <button className={"recipe-tab" + (tab === "method" ? " active" : "")} onClick={() => setTab("method")}>Method</button>
+              {!subscribed ? (
+                <div className="paywall">
+                  <h3>Full recipes are for subscribers.</h3>
+                  <p>Subscribe to unlock every ingredient list and method. {user ? "Your account isn't subscribed yet." : "Already subscribed? Log in."}</p>
+                  <div className="paywall-btns">
+                    {!user && <button className="btn" onClick={() => { setOpenRecipe(null); openAuthModal("login"); }}>Log In</button>}
+                    <button className="btn ghost" onClick={() => { setOpenRecipe(null); setPage("subscribe"); window.scrollTo({ top:0, behavior:"instant" }); }}>Subscribe — from $3.99/mo</button>
+                  </div>
                 </div>
-              )}
-
-              {tab === "ingredients" && openRecipe.ingredients && (
-                <ul className="recipe-ing-list">
-                  {openRecipe.ingredients.map((ing, i) =>
-                    ing.section
-                      ? <li key={i} className="recipe-ing-section">{ing.section}</li>
-                      : <li key={i} className="recipe-ing-item">
-                          <div className="ing-img-wrap">
-                            <img src={ing.img} alt={ing.name} className="ing-img"/>
-                          </div>
-                          <span className="ing-name">{ing.name}</span>
-                          <span className="ing-amount">{ing.amount}</span>
-                        </li>
+              ) : (
+                <>
+                  {openRecipe.ingredients && (
+                    <div className="recipe-tabs">
+                      <button className={"recipe-tab" + (tab === "ingredients" ? " active" : "")} onClick={() => setTab("ingredients")}>Ingredients</button>
+                      <button className={"recipe-tab" + (tab === "method" ? " active" : "")} onClick={() => setTab("method")}>Method</button>
+                    </div>
                   )}
-                </ul>
-              )}
 
-              {(tab === "method" || !openRecipe.ingredients) && (
-                <ol className="recipe-steps">
-                  {(() => {
-                    let n = 0;
-                    return openRecipe.steps.map((step, i) => {
-                      if (step.section) return <div key={i} className="recipe-step-section">{step.section}</div>;
-                      n++;
-                      return (
-                        <li key={i}>
-                          <span className="recipe-step-num">Step {n}</span>
-                          <span className="recipe-step-text">{step.text || step}</span>
-                        </li>
-                      );
-                    });
-                  })()}
-                </ol>
+                  {tab === "ingredients" && openRecipe.ingredients && (
+                    <ul className="recipe-ing-list">
+                      {openRecipe.ingredients.map((ing, i) =>
+                        ing.section
+                          ? <li key={i} className="recipe-ing-section">{ing.section}</li>
+                          : <li key={i} className="recipe-ing-item">
+                              <div className="ing-img-wrap">
+                                <img src={ing.img} alt={ing.name} className="ing-img"/>
+                              </div>
+                              <span className="ing-name">{ing.name}</span>
+                              <span className="ing-amount">{ing.amount}</span>
+                            </li>
+                      )}
+                    </ul>
+                  )}
+
+                  {(tab === "method" || !openRecipe.ingredients) && (
+                    <ol className="recipe-steps">
+                      {(() => {
+                        let n = 0;
+                        return openRecipe.steps.map((step, i) => {
+                          if (step.section) return <div key={i} className="recipe-step-section">{step.section}</div>;
+                          n++;
+                          return (
+                            <li key={i}>
+                              <span className="recipe-step-num">Step {n}</span>
+                              <span className="recipe-step-text">{step.text || step}</span>
+                            </li>
+                          );
+                        });
+                      })()}
+                    </ol>
+                  )}
+                </>
               )}
             </div>
           </div>
