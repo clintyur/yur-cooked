@@ -100,7 +100,7 @@ function HomePage({ setPage }) {
           </a>
           <a href="#" onClick={reveal("about")} className="preview">
             <div className="preview-img">
-              <img src="images/story-preview.jpg" alt="The Story" className="preview-bg-img" style={{objectPosition:"center top"}}/>
+              <img src="images/story-preview.jpg" alt="The Story" className="preview-bg-img" style={{objectPosition:"center 30%"}}/>
             </div>
             <div className="preview-meta">
               <h3 className="preview-name">The <span className="it">Story</span></h3>
