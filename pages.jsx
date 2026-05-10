@@ -805,7 +805,7 @@ function AboutPage({ setPage }) {
         <div className="about-story">
           <aside className="col-meta">
             <div>The Story</div>
-            <div style={{ marginTop: 12, marginBottom: 20, fontFamily: "var(--serif)", fontStyle: "italic", fontSize: 28, textTransform: "none", letterSpacing: "-0.01em", color: "var(--ink)" }}>I.</div>
+            <div style={{ marginTop: 12, marginBottom: 20, fontFamily: "var(--sans)", fontSize: 28, textTransform: "none", letterSpacing: "-0.01em", color: "var(--ink)" }}>I.</div>
             <div className="col-photos">
               <div className="cp-slot"><img src="images/about-img_6672-2.jpg" alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/></div>
               <div className="cp-slot"><img src="images/about-img_6817.jpg" alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/></div>
