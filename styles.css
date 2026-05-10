@@ -34,7 +34,11 @@
   --accent-ink: #ffffff;
 }
 
-* { box-sizing: border-box; }
+* { box-sizing: border-box; min-width: 0; }
+html {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
 html, body { margin: 0; padding: 0; }
 body {
   background: var(--cream);
@@ -46,6 +50,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  max-width: 100vw;
   transition: background-color .35s ease, color .35s ease;
 }
 img { max-width: 100%; display: block; }
@@ -311,7 +316,7 @@ button { font-family: inherit; cursor: pointer; }
 .hero-wordmark {
   font-family: "Caveat", cursive;
   font-weight: 700;
-  font-size: clamp(96px, 18vw, 260px);
+  font-size: clamp(72px, 18vw, 260px);
   line-height: 0.9;
   letter-spacing: -0.01em;
   text-transform: none;
@@ -323,6 +328,7 @@ button { font-family: inherit; cursor: pointer; }
   width: 100%;
   padding: 0 var(--gutter);
   max-width: var(--max);
+  overflow: hidden;
   filter: url(#hand);
 }
 .hero-wordmark.wordmark-gooey {
@@ -2431,6 +2437,13 @@ button { font-family: inherit; cursor: pointer; }
    MOBILE — comprehensive fixes (max-width: 719px)
    ============================================================ */
 @media (max-width: 719px) {
+  /* hard stop — nothing bleeds past the viewport */
+  .page, .container, section, header, footer, .hero, .hero-content,
+  .intro, .preview-grid, .section, .about-story, .contact-wrap,
+  .book-hero, .sub-hero, .sub-pricing, .ticker, .footer {
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
 
   /* ── Modal — slide up from bottom like a sheet ── */
   .modal-bg {
