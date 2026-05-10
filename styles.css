@@ -967,7 +967,7 @@ button { font-family: inherit; cursor: pointer; }
   margin-top: 8px;
 }
 .about-photos-below .cp-slot {
-  aspect-ratio: 16/9;
+  aspect-ratio: 4/3;
 }
 .about-story .col-meta {
   align-self: start;
