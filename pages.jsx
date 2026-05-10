@@ -783,7 +783,7 @@ function AboutPage({ setPage }) {
       <div className="about-strip">
         <div className="cell"><div className="num">9<span className="it">+</span></div><div className="lbl">Years cooking</div></div>
         <div className="cell"><div className="num">{RECIPES.length}</div><div className="lbl">Recipes published</div></div>
-        <div className="cell"><div className="num">2022</div><div className="lbl">Started sharing</div></div>
+        <div className="cell"><div className="num">2023</div><div className="lbl">Started sharing</div></div>
       </div>
 
       <section className="container">
