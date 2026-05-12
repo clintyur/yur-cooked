@@ -104,7 +104,7 @@ function App() {
   }, []);
 
   const checkSubscription = async (uid) => {
-    const { data } = await supabase.from("subscribers").select("subscribed, discount_code").eq("id", uid).single();
+    const { data } = await supabase.from("subscribers").select("subscribed").eq("id", uid).maybeSingle();
     setSubscribed(data?.subscribed === true);
   };
 
@@ -131,6 +131,8 @@ function App() {
   }[page];
 
   const authProps = { user, subscribed, isAdmin, setUser };
+
+  if (!authReady) return null;
 
   return (
     <div data-screen-label={screenLabel} className={promo ? "has-promo" : ""}>

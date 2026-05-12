@@ -212,7 +212,7 @@ function AdminPage({ user, isAdmin, setPage }) {
       const ingredientsData = ingredients.map(x => x.type === "section" ? { section: x.value } : { name: x.name, amount: x.amount, img: "" });
       const stepsData = steps.map(x => x.type === "section" ? { section: x.value } : { text: x.text });
       const tags = formData.tags.split(",").map(t => t.trim()).filter(Boolean);
-      const { error } = await supabase.from("recipes").insert({ n: formData.n, name: formData.name, tags, serves: formData.serves, img: imgUrl, ingredients: ingredientsData, steps: stepsData });
+      const { error } = await supabase.from("recipes").insert({ n: formData.n, name: formData.name, tags, serves: formData.serves, img: imgUrl, ingredients: ingredientsData, steps: stepsData, published: true });
       if (error) throw error;
       setFormMsg("✓ Recipe saved!");
       fetchDbRecipes();
