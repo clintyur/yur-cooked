@@ -70,10 +70,16 @@ function Nav({ page, setPage, user, isAdmin }) {
             {isAdmin && (
               <a href="#" onClick={go("admin")} className={"nav-link" + (page === "admin" ? " active" : "")} style={{ color: "var(--accent)" }}>Admin</a>
             )}
-            {user
-              ? <a href="#" onClick={logout} className="nav-link">Log Out</a>
-              : <a href="#" onClick={(e) => { e.preventDefault(); openAuthModal("login"); }} className="nav-link">Log In</a>
-            }
+            {user ? (
+              <>
+                <a href="#" onClick={logout} className="nav-link">Log Out</a>
+                <a href="#" onClick={go("profile")} className={"nav-avatar" + (page === "profile" ? " active" : "")} title="Your profile">
+                  <span className="nav-avatar-circle">{(user.email || "?")[0].toUpperCase()}</span>
+                </a>
+              </>
+            ) : (
+              <a href="#" onClick={(e) => { e.preventDefault(); openAuthModal("login"); }} className="nav-link">Log In</a>
+            )}
           </nav>
           <button className={"nav-burger" + (open ? " open" : "")} onClick={() => setOpen(!open)} aria-label="Menu">
             <span></span><span></span>
@@ -88,10 +94,14 @@ function Nav({ page, setPage, user, isAdmin }) {
         {isAdmin && (
           <a href="#" onClick={go("admin")} className="nav-link" style={{ color: "var(--accent)" }}>Admin</a>
         )}
-        {user
-          ? <a href="#" onClick={logout} className="nav-link">Log Out</a>
-          : <a href="#" onClick={(e) => { e.preventDefault(); openAuthModal("login"); }} className="nav-link">Log In</a>
-        }
+        {user ? (
+          <>
+            <a href="#" onClick={go("profile")} className="nav-link">My Profile</a>
+            <a href="#" onClick={logout} className="nav-link">Log Out</a>
+          </>
+        ) : (
+          <a href="#" onClick={(e) => { e.preventDefault(); openAuthModal("login"); }} className="nav-link">Log In</a>
+        )}
         <div className="mobile-menu-foot">
           <a href="https://instagram.com/clintyurr" target="_blank" rel="noreferrer">Instagram</a>
           <a href="https://youtube.com/@ClintYur" target="_blank" rel="noreferrer">YouTube</a>
@@ -232,7 +242,10 @@ function WatchSection() {
       .then((data) => {
         if (cancelled) return;
         if (!data || !data.items || !data.items.length) { setStatus("fallback"); return; }
-        const items = data.items.slice(0, 4).map((it, i) => {
+        const items = data.items
+          .filter(it => !(it.link || "").includes("/shorts/"))
+          .slice(0, 4)
+          .map((it, i) => {
           const m = (it.link || "").match(/[?&]v=([\w-]{11})/);
           const vid = m ? m[1] : null;
           return {

@@ -116,6 +116,7 @@ function App() {
     about: AboutPage,
     contact: ContactPage,
     admin: AdminPage,
+    profile: ProfilePage,
   }[page] || HomePage;
 
   const screenLabel = {
@@ -126,6 +127,7 @@ function App() {
     about: "04 About",
     contact: "05 Contact",
     admin: "Admin",
+    profile: "Profile",
   }[page];
 
   const authProps = { user, subscribed, isAdmin, setUser };

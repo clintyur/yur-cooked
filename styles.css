@@ -2575,4 +2575,260 @@ button { font-family: inherit; cursor: pointer; }
   .admin-search { width: 100%; }
   .recipe-form { padding: 20px; }
   .recipe-form-row { flex-direction: column; }
+
+  /* ── Profile ── */
+  .profile-header { flex-direction: column; gap: 16px; }
+  .profile-avatar { width: 56px; height: 56px; font-size: 22px; }
+  .profile-name { font-size: clamp(24px, 6vw, 36px); }
+  .profile-edit-row { flex-wrap: wrap; }
 }
+
+/* ============================================================
+   RECIPE INTERACTIONS (Like · Save)
+   ============================================================ */
+.recipe-interact {
+  display: flex;
+  gap: 8px;
+  margin: 14px 0 4px;
+  padding: 12px 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+.recipe-interact-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border: 1px solid var(--rule);
+  border-radius: 100px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all .2s ease;
+}
+.recipe-interact-btn:hover { border-color: var(--ink); color: var(--ink); }
+.recipe-interact-btn.liked { background: #fee2e2; border-color: #f87171; color: #dc2626; }
+.recipe-interact-btn.saved { background: var(--ink); border-color: var(--ink); color: var(--cream); }
+
+/* ============================================================
+   COMMENTS
+   ============================================================ */
+.recipe-comments {
+  margin-top: 28px;
+  padding-top: 24px;
+  border-top: 1px solid var(--rule);
+  padding-bottom: 8px;
+}
+.recipe-comments-header { margin-bottom: 16px; }
+.recipe-comments-title {
+  font-size: 11px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--muted);
+}
+.comments-list { display: flex; flex-direction: column; gap: 18px; margin-bottom: 20px; }
+.comment { display: flex; gap: 12px; align-items: flex-start; }
+.comment-avatar {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--cream);
+  font-size: 13px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-family: var(--display);
+  text-transform: uppercase;
+  letter-spacing: 0;
+}
+.comment-avatar.sm { width: 28px; height: 28px; font-size: 11px; }
+.comment-body { flex: 1; min-width: 0; }
+.comment-meta { display: flex; align-items: baseline; gap: 8px; margin-bottom: 3px; }
+.comment-name { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; }
+.comment-date { font-size: 11px; color: var(--muted); }
+.comment-text { margin: 0; font-size: 14px; line-height: 1.55; color: var(--ink-2); }
+.comment-form { margin-top: 16px; }
+.comment-input-row { display: flex; align-items: center; gap: 10px; }
+.comment-input {
+  flex: 1;
+  padding: 8px 14px;
+  border: 1px solid var(--rule);
+  border-radius: 100px;
+  background: var(--cream-2);
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--ink);
+  outline: none;
+  transition: border-color .2s;
+}
+.comment-input:focus { border-color: var(--ink); }
+.comment-submit {
+  padding: 8px 16px;
+  background: var(--ink);
+  color: var(--cream);
+  border: none;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: opacity .2s;
+  white-space: nowrap;
+}
+.comment-submit:disabled { opacity: .35; cursor: default; }
+.comment-gate { margin-top: 12px; font-size: 13px; color: var(--muted); }
+.comment-gate-link {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: inherit;
+  font-family: inherit;
+  cursor: pointer;
+  padding: 0;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* ============================================================
+   NAV AVATAR
+   ============================================================ */
+.nav-avatar { display: flex; align-items: center; }
+.nav-avatar-circle {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--cream);
+  font-size: 11px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--display);
+  text-transform: uppercase;
+  transition: opacity .2s;
+  letter-spacing: 0;
+}
+.nav-avatar:hover .nav-avatar-circle,
+.nav-avatar.active .nav-avatar-circle { opacity: .7; }
+
+/* ============================================================
+   PROFILE PAGE
+   ============================================================ */
+.profile-header {
+  display: flex;
+  gap: 28px;
+  align-items: flex-start;
+  padding-bottom: 40px;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 36px;
+}
+.profile-avatar {
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--cream);
+  font-size: 28px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--display);
+  text-transform: uppercase;
+  flex-shrink: 0;
+  letter-spacing: 0;
+}
+.profile-info { flex: 1; min-width: 0; }
+.profile-name-row { display: flex; align-items: baseline; gap: 14px; margin-top: 4px; flex-wrap: wrap; }
+.profile-name {
+  font-family: var(--display);
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  line-height: 1;
+  margin: 0;
+}
+.profile-edit-btn {
+  background: none;
+  border: 1px solid var(--rule);
+  border-radius: 100px;
+  padding: 4px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .2s;
+  white-space: nowrap;
+}
+.profile-edit-btn:hover { border-color: var(--ink); color: var(--ink); }
+.profile-edit-row { display: flex; align-items: center; gap: 10px; margin-top: 4px; flex-wrap: wrap; }
+.profile-name-input {
+  flex: 1;
+  font-family: var(--display);
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  background: var(--cream-2);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 6px 12px;
+  color: var(--ink);
+  outline: none;
+  min-width: 160px;
+}
+.profile-name-input:focus { border-color: var(--ink); }
+.profile-email { font-size: 13px; color: var(--muted); margin-top: 6px; }
+.profile-tabs-row {
+  display: flex;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 0;
+}
+.profile-tab {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 12px 20px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: -1px;
+}
+.profile-tab.active { color: var(--ink); border-bottom-color: var(--ink); }
+.profile-tab-count {
+  background: var(--ink);
+  color: var(--cream);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 100px;
+  letter-spacing: 0;
+}
+.profile-empty {
+  padding: 72px 0;
+  text-align: center;
+  color: var(--muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+.profile-empty p { margin: 0; max-width: 38ch; line-height: 1.6; }

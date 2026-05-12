@@ -1,6 +1,18 @@
 /* global React, Nav, Footer, Icon, Ticker */
 const { useState: useStateP, useEffect: useEffectP } = React;
 
+const fmtCommentDate = (s) => {
+  try {
+    const d = new Date(s);
+    const diff = (Date.now() - d.getTime()) / 1000;
+    if (diff < 60) return "just now";
+    if (diff < 3600) return Math.round(diff / 60) + "m ago";
+    if (diff < 86400) return Math.round(diff / 3600) + "h ago";
+    if (diff < 86400 * 7) return Math.round(diff / 86400) + "d ago";
+    return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  } catch(e) { return ""; }
+};
+
 // ─── EFFECT TOGGLES ──────────────────────────────────────────────────────────
 // Flip to true to enable the liquid mercury wordmark effect on the hero
 const GOOEY_WORDMARK = false;
@@ -578,9 +590,234 @@ const RECIPES = [
   },
 ];
 
+/* ============ RECIPE MODAL ============ */
+function RecipeModal({ openRecipe, onClose, user, subscribed, setPage }) {
+  const [tab, setTab] = useStateP("ingredients");
+  const [likeCount, setLikeCount] = useStateP(0);
+  const [liked, setLiked] = useStateP(false);
+  const [saved, setSaved] = useStateP(false);
+  const [comments, setComments] = useStateP([]);
+  const [commentText, setCommentText] = useStateP("");
+  const [commentStatus, setCommentStatus] = useStateP("idle");
+  const [userProfile, setUserProfile] = useStateP(null);
+
+  useEffectP(() => {
+    if (!openRecipe) return;
+    setTab("ingredients");
+    setLikeCount(0); setLiked(false); setSaved(false);
+    setComments([]); setCommentText(""); setCommentStatus("idle");
+
+    const rid = openRecipe.id ? String(openRecipe.id) : ("r-" + openRecipe.n);
+
+    supabase.from("recipe_likes").select("*", { count: "exact", head: true }).eq("recipe_id", rid)
+      .then(({ count }) => setLikeCount(count || 0));
+    supabase.from("recipe_comments").select("*").eq("recipe_id", rid)
+      .order("created_at", { ascending: true })
+      .then(({ data }) => setComments(data || []));
+
+    if (user) {
+      supabase.from("recipe_likes").select("id").eq("recipe_id", rid).eq("user_id", user.id).maybeSingle()
+        .then(({ data }) => setLiked(!!data));
+      supabase.from("recipe_saves").select("id").eq("recipe_id", rid).eq("user_id", user.id).maybeSingle()
+        .then(({ data }) => setSaved(!!data));
+      supabase.from("profiles").select("display_name").eq("id", user.id).single()
+        .then(({ data }) => { if (data) setUserProfile(data); });
+    }
+  }, [openRecipe]);
+
+  if (!openRecipe) return null;
+
+  const rid = openRecipe.id ? String(openRecipe.id) : ("r-" + openRecipe.n);
+
+  const toggleLike = async () => {
+    if (!user) { openAuthModal("login"); return; }
+    if (!subscribed) { onClose(); setPage("subscribe"); return; }
+    if (liked) {
+      setLiked(false); setLikeCount(c => Math.max(0, c - 1));
+      supabase.from("recipe_likes").delete().eq("recipe_id", rid).eq("user_id", user.id);
+    } else {
+      setLiked(true); setLikeCount(c => c + 1);
+      supabase.from("recipe_likes").insert({ user_id: user.id, recipe_id: rid });
+    }
+  };
+
+  const toggleSave = async () => {
+    if (!user) { openAuthModal("login"); return; }
+    if (!subscribed) { onClose(); setPage("subscribe"); return; }
+    if (saved) {
+      setSaved(false);
+      supabase.from("recipe_saves").delete().eq("recipe_id", rid).eq("user_id", user.id);
+    } else {
+      setSaved(true);
+      supabase.from("recipe_saves").insert({ user_id: user.id, recipe_id: rid });
+    }
+  };
+
+  const submitComment = async (e) => {
+    e.preventDefault();
+    if (!commentText.trim() || commentStatus === "submitting" || !user) return;
+    setCommentStatus("submitting");
+    const displayName = userProfile?.display_name || user.email?.split("@")[0] || "Anonymous";
+    const { data: comment } = await supabase.from("recipe_comments").insert({
+      user_id: user.id, recipe_id: rid,
+      content: commentText.trim(), display_name: displayName,
+    }).select().single();
+    if (comment) { setComments(prev => [...prev, comment]); setCommentText(""); }
+    setCommentStatus("idle");
+  };
+
+  const imgs = openRecipe.imgs || (openRecipe.img ? [openRecipe.img] : []);
+  const count = imgs.length;
+  const userInitial = (userProfile?.display_name || user?.email || "?")[0].toUpperCase();
+
+  return (
+    <div className="modal-bg open" onClick={onClose}>
+      <div className="modal recipe-modal" onClick={e => e.stopPropagation()}>
+        <button className="modal-close" onClick={onClose}><Icon.close/></button>
+
+        {(() => {
+          if (count === 3 || count === 5) return (
+            <div className={`recipe-modal-img count-${count}`}>
+              <img className="img-full" src={imgs[0]} alt={openRecipe.name}/>
+              {imgs.slice(1).map((src, i) => <img key={i} src={src} alt={openRecipe.name}/>)}
+            </div>
+          );
+          return (
+            <div className={`recipe-modal-img count-${Math.min(count, 4)}`}>
+              {imgs.map((src, i) => <img key={i} src={src} alt={openRecipe.name}/>)}
+            </div>
+          );
+        })()}
+
+        <div className="modal-info recipe-modal-info">
+          <div className="eyebrow">
+            <span className="dot"></span>{openRecipe.tags.join(" · ")}
+            {openRecipe.serves && <span style={{marginLeft:12}}>Serves {openRecipe.serves}</span>}
+          </div>
+          <h2 style={{fontFamily:"var(--display)",fontSize:"clamp(22px,3vw,36px)",lineHeight:1.05,letterSpacing:"-0.03em",fontWeight:800,textTransform:"uppercase",margin:"6px 0 0"}}>
+            {openRecipe.name}
+          </h2>
+
+          {/* Like + Save */}
+          <div className="recipe-interact">
+            <button className={"recipe-interact-btn" + (liked ? " liked" : "")} onClick={toggleLike}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill={liked ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+              </svg>
+              {likeCount > 0 ? likeCount + " " : ""}{liked ? "Liked" : "Like"}
+            </button>
+            <button className={"recipe-interact-btn" + (saved ? " saved" : "")} onClick={toggleSave}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill={saved ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+              </svg>
+              {saved ? "Saved" : "Save"}
+            </button>
+          </div>
+
+          {/* Paywall or recipe content */}
+          {!subscribed ? (
+            <div className="paywall">
+              <h3>Full recipes are for subscribers.</h3>
+              <p>Subscribe to unlock every ingredient list and method. {user ? "Your account isn't subscribed yet." : "Already subscribed? Log in."}</p>
+              <div className="paywall-btns">
+                {!user && <button className="btn" onClick={() => { onClose(); openAuthModal("login"); }}>Log In</button>}
+                <button className="btn ghost" onClick={() => { onClose(); setPage("subscribe"); window.scrollTo({ top:0, behavior:"instant" }); }}>Subscribe — from $3.99/mo</button>
+              </div>
+            </div>
+          ) : (
+            <>
+              {openRecipe.ingredients && (
+                <div className="recipe-tabs">
+                  <button className={"recipe-tab" + (tab === "ingredients" ? " active" : "")} onClick={() => setTab("ingredients")}>Ingredients</button>
+                  <button className={"recipe-tab" + (tab === "method" ? " active" : "")} onClick={() => setTab("method")}>Method</button>
+                </div>
+              )}
+              {tab === "ingredients" && openRecipe.ingredients && (
+                <ul className="recipe-ing-list">
+                  {openRecipe.ingredients.map((ing, i) =>
+                    ing.section
+                      ? <li key={i} className="recipe-ing-section">{ing.section}</li>
+                      : <li key={i} className="recipe-ing-item">
+                          <div className="ing-img-wrap"><img src={ing.img} alt={ing.name} className="ing-img"/></div>
+                          <span className="ing-name">{ing.name}</span>
+                          <span className="ing-amount">{ing.amount}</span>
+                        </li>
+                  )}
+                </ul>
+              )}
+              {(tab === "method" || !openRecipe.ingredients) && (
+                <ol className="recipe-steps">
+                  {(() => {
+                    let n = 0;
+                    return openRecipe.steps.map((step, i) => {
+                      if (step.section) return <div key={i} className="recipe-step-section">{step.section}</div>;
+                      n++;
+                      return (
+                        <li key={i}>
+                          <span className="recipe-step-num">Step {n}</span>
+                          <span className="recipe-step-text">{step.text || step}</span>
+                        </li>
+                      );
+                    });
+                  })()}
+                </ol>
+              )}
+            </>
+          )}
+
+          {/* Comments — visible to everyone */}
+          <div className="recipe-comments">
+            <div className="recipe-comments-header">
+              <span className="recipe-comments-title">
+                {comments.length === 0 ? "No comments yet" : `${comments.length} comment${comments.length !== 1 ? "s" : ""}`}
+              </span>
+            </div>
+            <div className="comments-list">
+              {comments.map(c => (
+                <div key={c.id} className="comment">
+                  <div className="comment-avatar">{(c.display_name || "A")[0].toUpperCase()}</div>
+                  <div className="comment-body">
+                    <div className="comment-meta">
+                      <span className="comment-name">{c.display_name}</span>
+                      <span className="comment-date">{fmtCommentDate(c.created_at)}</span>
+                    </div>
+                    <p className="comment-text">{c.content}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            {subscribed ? (
+              <form className="comment-form" onSubmit={submitComment}>
+                <div className="comment-input-row">
+                  <div className="comment-avatar sm">{userInitial}</div>
+                  <input
+                    className="comment-input"
+                    placeholder="Add a comment…"
+                    value={commentText}
+                    onChange={e => setCommentText(e.target.value)}
+                    maxLength={500}
+                  />
+                  <button type="submit" className="comment-submit"
+                    disabled={!commentText.trim() || commentStatus === "submitting"}>
+                    {commentStatus === "submitting" ? "…" : "Post"}
+                  </button>
+                </div>
+              </form>
+            ) : (
+              <p className="comment-gate">
+                <button className="comment-gate-link" onClick={() => { onClose(); setPage("subscribe"); }}>Subscribe</button> to join the conversation.
+              </p>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ============ RECIPE BOOK ============ */
 function RecipeBookPage({ setPage, user, subscribed }) {
   const [openRecipe, setOpenRecipe] = useStateP(null);
-  const [tab, setTab] = useStateP("ingredients");
   const [dbRecipes, setDbRecipes] = useStateP([]);
 
   useEffectP(() => {
@@ -590,9 +827,6 @@ function RecipeBookPage({ setPage, user, subscribed }) {
 
   const allRecipes = [...RECIPES, ...dbRecipes];
 
-  const openDetail = (r) => {
-    setOpenRecipe(r); setTab("ingredients");
-  };
   return (
     <div className="page">
       <section className="book-hero">
@@ -633,7 +867,7 @@ function RecipeBookPage({ setPage, user, subscribed }) {
         <div className="recipe-grid">
           {allRecipes.map((r, i) => (
             <div key={i} className={"recipe" + (r.steps ? " recipe--clickable" : "")}
-                 onClick={r.steps ? () => openDetail(r) : undefined}>
+                 onClick={r.steps ? () => setOpenRecipe(r) : undefined}>
               <div className="recipe-img">
                 {(r.imgs || r.img)
                   ? <img src={r.imgs ? r.imgs[0] : r.img} alt={r.name} style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}/>
@@ -651,90 +885,15 @@ function RecipeBookPage({ setPage, user, subscribed }) {
         </div>
       </section>
 
-      <div className={"modal-bg" + (openRecipe ? " open" : "")} onClick={() => setOpenRecipe(null)}>
-        {openRecipe && (
-          <div className="modal recipe-modal" onClick={(e) => e.stopPropagation()}>
-            <button className="modal-close" onClick={() => setOpenRecipe(null)}><Icon.close/></button>
-            {(() => {
-              const imgs = openRecipe.imgs || (openRecipe.img ? [openRecipe.img] : []);
-              const count = imgs.length;
-              if (count === 3 || count === 5) {
-                return (
-                  <div className={`recipe-modal-img count-${count}`}>
-                    <img className="img-full" src={imgs[0]} alt={openRecipe.name}/>
-                    {imgs.slice(1).map((src, i) => <img key={i} src={src} alt={openRecipe.name}/>)}
-                  </div>
-                );
-              }
-              return (
-                <div className={`recipe-modal-img count-${Math.min(count, 4)}`}>
-                  {imgs.map((src, i) => <img key={i} src={src} alt={openRecipe.name}/>)}
-                </div>
-              );
-            })()}
-            <div className="modal-info recipe-modal-info">
-              <div className="eyebrow"><span className="dot"></span>{openRecipe.tags.join(" · ")}{openRecipe.serves && <span style={{marginLeft:12}}>Serves {openRecipe.serves}</span>}</div>
-              <h2 style={{fontFamily:"var(--display)",fontSize:"clamp(22px,3vw,36px)",lineHeight:1.05,letterSpacing:"-0.03em",fontWeight:800,textTransform:"uppercase",margin:"6px 0 0"}}>
-                {openRecipe.name}
-              </h2>
-
-              {!subscribed ? (
-                <div className="paywall">
-                  <h3>Full recipes are for subscribers.</h3>
-                  <p>Subscribe to unlock every ingredient list and method. {user ? "Your account isn't subscribed yet." : "Already subscribed? Log in."}</p>
-                  <div className="paywall-btns">
-                    {!user && <button className="btn" onClick={() => { setOpenRecipe(null); openAuthModal("login"); }}>Log In</button>}
-                    <button className="btn ghost" onClick={() => { setOpenRecipe(null); setPage("subscribe"); window.scrollTo({ top:0, behavior:"instant" }); }}>Subscribe — from $3.99/mo</button>
-                  </div>
-                </div>
-              ) : (
-                <>
-                  {openRecipe.ingredients && (
-                    <div className="recipe-tabs">
-                      <button className={"recipe-tab" + (tab === "ingredients" ? " active" : "")} onClick={() => setTab("ingredients")}>Ingredients</button>
-                      <button className={"recipe-tab" + (tab === "method" ? " active" : "")} onClick={() => setTab("method")}>Method</button>
-                    </div>
-                  )}
-
-                  {tab === "ingredients" && openRecipe.ingredients && (
-                    <ul className="recipe-ing-list">
-                      {openRecipe.ingredients.map((ing, i) =>
-                        ing.section
-                          ? <li key={i} className="recipe-ing-section">{ing.section}</li>
-                          : <li key={i} className="recipe-ing-item">
-                              <div className="ing-img-wrap">
-                                <img src={ing.img} alt={ing.name} className="ing-img"/>
-                              </div>
-                              <span className="ing-name">{ing.name}</span>
-                              <span className="ing-amount">{ing.amount}</span>
-                            </li>
-                      )}
-                    </ul>
-                  )}
-
-                  {(tab === "method" || !openRecipe.ingredients) && (
-                    <ol className="recipe-steps">
-                      {(() => {
-                        let n = 0;
-                        return openRecipe.steps.map((step, i) => {
-                          if (step.section) return <div key={i} className="recipe-step-section">{step.section}</div>;
-                          n++;
-                          return (
-                            <li key={i}>
-                              <span className="recipe-step-num">Step {n}</span>
-                              <span className="recipe-step-text">{step.text || step}</span>
-                            </li>
-                          );
-                        });
-                      })()}
-                    </ol>
-                  )}
-                </>
-              )}
-            </div>
-          </div>
-        )}
-      </div>
+      {openRecipe && (
+        <RecipeModal
+          openRecipe={openRecipe}
+          onClose={() => setOpenRecipe(null)}
+          user={user}
+          subscribed={subscribed}
+          setPage={setPage}
+        />
+      )}
     </div>
   );
 }
@@ -1170,4 +1329,144 @@ function SubscribePage({ setPage }) {
   );
 }
 
-Object.assign(window, { HomePage, RecipeBookPage, ShopPage, AboutPage, ContactPage, SubscribePage });
+/* ============ PROFILE ============ */
+function ProfilePage({ user, subscribed, setPage }) {
+  const [profile, setProfile] = useStateP(null);
+  const [editMode, setEditMode] = useStateP(false);
+  const [nameInput, setNameInput] = useStateP("");
+  const [saving, setSaving] = useStateP(false);
+  const [activeTab, setActiveTab] = useStateP("saved");
+  const [savedIds, setSavedIds] = useStateP([]);
+  const [likedIds, setLikedIds] = useStateP([]);
+  const [dbRecipes, setDbRecipes] = useStateP([]);
+  const [openRecipe, setOpenRecipe] = useStateP(null);
+
+  useEffectP(() => {
+    if (!user) { setPage("home"); return; }
+    supabase.from("profiles").select("*").eq("id", user.id).single().then(({ data }) => {
+      if (data) {
+        setProfile(data); setNameInput(data.display_name || "");
+      } else {
+        const dn = user.email?.split("@")[0] || "chef";
+        supabase.from("profiles").insert({ id: user.id, display_name: dn }).then(() => {
+          setProfile({ id: user.id, display_name: dn }); setNameInput(dn);
+        });
+      }
+    });
+    supabase.from("recipe_saves").select("recipe_id").eq("user_id", user.id)
+      .then(({ data }) => setSavedIds((data || []).map(r => r.recipe_id)));
+    supabase.from("recipe_likes").select("recipe_id").eq("user_id", user.id)
+      .then(({ data }) => setLikedIds((data || []).map(r => r.recipe_id)));
+    supabase.from("recipes").select("*").eq("published", true)
+      .then(({ data }) => setDbRecipes(data || []));
+  }, [user]);
+
+  const allRecipes = [...RECIPES, ...dbRecipes];
+  const getRid = (r) => r.id ? String(r.id) : ("r-" + r.n);
+  const savedRecipes = allRecipes.filter(r => savedIds.includes(getRid(r)));
+  const likedRecipes = allRecipes.filter(r => likedIds.includes(getRid(r)));
+
+  const saveName = async () => {
+    if (!nameInput.trim()) return;
+    setSaving(true);
+    await supabase.from("profiles").upsert({ id: user.id, display_name: nameInput.trim() });
+    setProfile(p => ({ ...p, display_name: nameInput.trim() }));
+    setSaving(false); setEditMode(false);
+  };
+
+  if (!user) return null;
+
+  const initial = ((profile?.display_name || user.email || "?")[0] || "?").toUpperCase();
+  const displayName = profile?.display_name || user.email?.split("@")[0] || "Chef";
+  const activeList = activeTab === "saved" ? savedRecipes : likedRecipes;
+
+  return (
+    <div className="page">
+      <section className="container" style={{ paddingTop: 56 }}>
+
+        {/* Profile header */}
+        <div className="profile-header">
+          <div className="profile-avatar">{initial}</div>
+          <div className="profile-info">
+            <div className="eyebrow"><span className="dot"></span>{subscribed ? "Subscriber" : "Member"}</div>
+            {editMode ? (
+              <div className="profile-edit-row">
+                <input
+                  className="profile-name-input"
+                  value={nameInput}
+                  onChange={e => setNameInput(e.target.value)}
+                  onKeyDown={e => e.key === "Enter" && saveName()}
+                  autoFocus maxLength={40} placeholder="Display name"
+                />
+                <button className="btn" onClick={saveName} disabled={saving}>{saving ? "Saving…" : "Save"}</button>
+                <button className="btn ghost" onClick={() => setEditMode(false)}>Cancel</button>
+              </div>
+            ) : (
+              <div className="profile-name-row">
+                <h1 className="profile-name">{displayName}</h1>
+                <button className="profile-edit-btn" onClick={() => setEditMode(true)}>Edit name</button>
+              </div>
+            )}
+            <div className="profile-email">{user.email}</div>
+            {!subscribed && (
+              <div style={{ marginTop: 20 }}>
+                <button className="btn" onClick={() => setPage("subscribe")}>Subscribe to unlock full recipes →</button>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Tabs */}
+        <div className="profile-tabs-row">
+          <button className={"profile-tab" + (activeTab === "saved" ? " active" : "")} onClick={() => setActiveTab("saved")}>
+            Saved {savedRecipes.length > 0 && <span className="profile-tab-count">{savedRecipes.length}</span>}
+          </button>
+          <button className={"profile-tab" + (activeTab === "liked" ? " active" : "")} onClick={() => setActiveTab("liked")}>
+            Liked {likedRecipes.length > 0 && <span className="profile-tab-count">{likedRecipes.length}</span>}
+          </button>
+        </div>
+
+        {/* Recipe list */}
+        {activeList.length === 0 ? (
+          <div className="profile-empty">
+            <p>{activeTab === "saved"
+              ? "No saved recipes yet. Open any recipe and hit Save to find it here."
+              : "No liked recipes yet. Open any recipe and tap the heart to like it."
+            }</p>
+            <button className="btn ghost" onClick={() => setPage("recipe")}>Browse Recipes <Icon.arrow className="arrow"/></button>
+          </div>
+        ) : (
+          <div className="recipe-grid" style={{ marginTop: 32 }}>
+            {activeList.map((r, i) => (
+              <div key={i} className="recipe recipe--clickable" onClick={() => setOpenRecipe(r)}>
+                <div className="recipe-img">
+                  {(r.imgs || r.img)
+                    ? <img src={r.imgs ? r.imgs[0] : r.img} alt={r.name} style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}/>
+                    : <image-slot id={"pr-" + r.n} placeholder={r.name}></image-slot>
+                  }
+                </div>
+                <span className="recipe-num">№ {r.n}</span>
+                <h3 className="recipe-name">{r.name}</h3>
+                <div className="recipe-tags">
+                  {(r.tags || []).map((t, j) => <span key={j} className="recipe-tag">{t}</span>)}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {openRecipe && (
+        <RecipeModal
+          openRecipe={openRecipe}
+          onClose={() => setOpenRecipe(null)}
+          user={user}
+          subscribed={subscribed}
+          setPage={setPage}
+        />
+      )}
+    </div>
+  );
+}
+
+Object.assign(window, { HomePage, RecipeBookPage, ShopPage, AboutPage, ContactPage, SubscribePage, ProfilePage });
