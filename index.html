@@ -143,14 +143,16 @@ function App() {
 
       <SignupModal/>
       <AuthModal/>
-      <TweaksPanel title="Tweaks">
-        <TweakSection label="Accent">
-          <TweakColor label="Color" value={t.accent} options={["#b8442a","#3d4a2a","#6b1f1c","#c9921f","#1a1814"]} onChange={(v) => setTweak("accent", v)}/>
-        </TweakSection>
-        <TweakSection label="Theme">
-          <TweakRadio label="Mode" value={t.theme} options={["light","dark"]} onChange={(v) => setTweak("theme", v)}/>
-        </TweakSection>
-      </TweaksPanel>
+      {isAdmin && (
+        <TweaksPanel title="Tweaks">
+          <TweakSection label="Accent">
+            <TweakColor label="Color" value={t.accent} options={["#b8442a","#3d4a2a","#6b1f1c","#c9921f","#1a1814"]} onChange={(v) => setTweak("accent", v)}/>
+          </TweakSection>
+          <TweakSection label="Theme">
+            <TweakRadio label="Mode" value={t.theme} options={["light","dark"]} onChange={(v) => setTweak("theme", v)}/>
+          </TweakSection>
+        </TweaksPanel>
+      )}
     </div>
   );
 }

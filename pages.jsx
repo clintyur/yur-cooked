@@ -689,7 +689,7 @@ function RecipeModal({ openRecipe, onClose, user, subscribed, setPage }) {
 
         <div className="modal-info recipe-modal-info">
           <div className="eyebrow">
-            <span className="dot"></span>{openRecipe.tags.join(" · ")}
+            <span className="dot"></span>{(openRecipe.tags || []).join(" · ")}
             {openRecipe.serves && <span style={{marginLeft:12}}>Serves {openRecipe.serves}</span>}
           </div>
           <h2 style={{fontFamily:"var(--display)",fontSize:"clamp(22px,3vw,36px)",lineHeight:1.05,letterSpacing:"-0.03em",fontWeight:800,textTransform:"uppercase",margin:"6px 0 0"}}>
@@ -875,7 +875,7 @@ function RecipeBookPage({ setPage, user, subscribed }) {
               <span className="recipe-num">№ {r.n}</span>
               <h3 className="recipe-name">{r.name}</h3>
               <div className="recipe-tags">
-                {r.tags.map((t, j) => <span key={j} className="recipe-tag">{t}</span>)}
+                {(r.tags || []).map((t, j) => <span key={j} className="recipe-tag">{t}</span>)}
                 {r.steps && <span className="recipe-tag recipe-tag--cta">View Recipe →</span>}
               </div>
             </div>
@@ -972,7 +972,10 @@ function ShopPage() {
               </div>
               <div className="cluster" style={{ justifyContent: "space-between", marginTop: "auto", paddingTop: 24, borderTop: "1px solid var(--rule)" }}>
                 <span className="book-price" style={{ fontSize: 28 }}>{open.price}</span>
-                <a href="#" className="btn">Add to Bag <Icon.arrow className="arrow"/></a>
+                {open.tag === "Coming Soon"
+                  ? <span className="btn ghost" style={{ opacity: 0.5, cursor: "default" }}>Coming Soon</span>
+                  : <a href="#" className="btn">Add to Bag <Icon.arrow className="arrow"/></a>
+                }
               </div>
             </div>
           </div>
@@ -1040,8 +1043,8 @@ function AboutPage({ setPage }) {
           <div className="eyebrow" style={{ justifySelf: "center" }}><span className="dot"></span>Find me</div>
           <h3 className="section-title" style={{ fontSize: "clamp(36px, 5vw, 64px)", maxWidth: "20ch", margin: "0 auto" }}>Most days I'm <span className="it">somewhere here.</span></h3>
           <div className="cluster" style={{ justifyContent: "center", gap: 12, marginTop: 16 }}>
-            <a href="#" className="social-bar" style={{ display: "inline-flex" }}><Icon.ig/> @clintyurr</a>
-            <a href="#" className="social-bar" style={{ display: "inline-flex" }}><Icon.yt/> @ClintYur</a>
+            <a href="https://instagram.com/clintyurr" target="_blank" rel="noreferrer" className="social-bar" style={{ display: "inline-flex" }}><Icon.ig/> @clintyurr</a>
+            <a href="https://youtube.com/@ClintYur" target="_blank" rel="noreferrer" className="social-bar" style={{ display: "inline-flex" }}><Icon.yt/> @ClintYur</a>
           </div>
           <a href="#" onClick={go("contact")} className="link-arrow" style={{ alignSelf: "center", marginTop: 16 }}>Or work with me <Icon.arrow className="arrow"/></a>
         </div>

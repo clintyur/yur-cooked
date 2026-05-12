@@ -2,7 +2,7 @@
    admin.jsx — Admin panel (restricted to is_admin users)
    ============================================================ */
 
-const MONTHLY_PRICE = 3.99;
+const MONTHLY_PRICE = 7.99; // monthly plan price; annual = $47.94/yr (~$3.99/mo)
 
 /* ── Chart helpers ───────────────────────────────────────── */
 function getLast12Months() {
