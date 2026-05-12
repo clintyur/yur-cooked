@@ -620,7 +620,7 @@ function RecipeModal({ openRecipe, onClose, user, subscribed, setPage }) {
         .then(({ data }) => setLiked(!!data));
       supabase.from("recipe_saves").select("id").eq("recipe_id", rid).eq("user_id", user.id).maybeSingle()
         .then(({ data }) => setSaved(!!data));
-      supabase.from("profiles").select("display_name").eq("id", user.id).single()
+      supabase.from("profiles").select("display_name").eq("id", user.id).maybeSingle()
         .then(({ data }) => { if (data) setUserProfile(data); });
     }
   }, [openRecipe]);
@@ -631,25 +631,23 @@ function RecipeModal({ openRecipe, onClose, user, subscribed, setPage }) {
 
   const toggleLike = async () => {
     if (!user) { openAuthModal("login"); return; }
-    if (!subscribed) { onClose(); setPage("subscribe"); return; }
     if (liked) {
       setLiked(false); setLikeCount(c => Math.max(0, c - 1));
-      supabase.from("recipe_likes").delete().eq("recipe_id", rid).eq("user_id", user.id);
+      await supabase.from("recipe_likes").delete().eq("recipe_id", rid).eq("user_id", user.id);
     } else {
       setLiked(true); setLikeCount(c => c + 1);
-      supabase.from("recipe_likes").insert({ user_id: user.id, recipe_id: rid });
+      await supabase.from("recipe_likes").insert({ user_id: user.id, recipe_id: rid });
     }
   };
 
   const toggleSave = async () => {
     if (!user) { openAuthModal("login"); return; }
-    if (!subscribed) { onClose(); setPage("subscribe"); return; }
     if (saved) {
       setSaved(false);
-      supabase.from("recipe_saves").delete().eq("recipe_id", rid).eq("user_id", user.id);
+      await supabase.from("recipe_saves").delete().eq("recipe_id", rid).eq("user_id", user.id);
     } else {
       setSaved(true);
-      supabase.from("recipe_saves").insert({ user_id: user.id, recipe_id: rid });
+      await supabase.from("recipe_saves").insert({ user_id: user.id, recipe_id: rid });
     }
   };
 
@@ -1342,13 +1340,13 @@ function ProfilePage({ user, subscribed, setPage }) {
   const [openRecipe, setOpenRecipe] = useStateP(null);
 
   useEffectP(() => {
-    if (!user) { setPage("home"); return; }
-    supabase.from("profiles").select("*").eq("id", user.id).single().then(({ data }) => {
+    if (!user) return; // wait for auth — don't redirect
+    supabase.from("profiles").select("*").eq("id", user.id).maybeSingle().then(({ data }) => {
       if (data) {
         setProfile(data); setNameInput(data.display_name || "");
       } else {
         const dn = user.email?.split("@")[0] || "chef";
-        supabase.from("profiles").insert({ id: user.id, display_name: dn }).then(() => {
+        supabase.from("profiles").upsert({ id: user.id, display_name: dn }, { onConflict: "id" }).then(() => {
           setProfile({ id: user.id, display_name: dn }); setNameInput(dn);
         });
       }
@@ -1374,7 +1372,13 @@ function ProfilePage({ user, subscribed, setPage }) {
     setSaving(false); setEditMode(false);
   };
 
-  if (!user) return null;
+  if (!user) return (
+    <div className="page">
+      <div className="container" style={{ paddingTop: 80, textAlign: "center", color: "var(--muted)" }}>
+        <p>Loading…</p>
+      </div>
+    </div>
+  );
 
   const initial = ((profile?.display_name || user.email || "?")[0] || "?").toUpperCase();
   const displayName = profile?.display_name || user.email?.split("@")[0] || "Chef";
