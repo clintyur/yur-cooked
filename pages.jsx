@@ -600,12 +600,16 @@ function RecipeModal({ openRecipe, onClose, user, subscribed, setPage }) {
   const [commentText, setCommentText] = useStateP("");
   const [commentStatus, setCommentStatus] = useStateP("idle");
   const [userProfile, setUserProfile] = useStateP(null);
+  const [commentPhoto, setCommentPhoto] = useStateP(null);
+  const [commentPhotoPreview, setCommentPhotoPreview] = useStateP(null);
+  const commentPhotoRef = React.useRef();
 
   useEffectP(() => {
     if (!openRecipe) return;
     setTab("ingredients");
     setLikeCount(0); setLiked(false); setSaved(false);
     setComments([]); setCommentText(""); setCommentStatus("idle");
+    setCommentPhoto(null); setCommentPhotoPreview(null);
 
     const rid = openRecipe.id ? String(openRecipe.id) : ("r-" + openRecipe.n);
 
@@ -653,14 +657,31 @@ function RecipeModal({ openRecipe, onClose, user, subscribed, setPage }) {
 
   const submitComment = async (e) => {
     e.preventDefault();
-    if (!commentText.trim() || commentStatus === "submitting" || !user) return;
+    if ((!commentText.trim() && !commentPhoto) || commentStatus === "submitting" || !user) return;
     setCommentStatus("submitting");
-    const displayName = userProfile?.display_name || user.email?.split("@")[0] || "Anonymous";
-    const { data: comment } = await supabase.from("recipe_comments").insert({
-      user_id: user.id, recipe_id: rid,
-      content: commentText.trim(), display_name: displayName,
-    }).select().single();
-    if (comment) { setComments(prev => [...prev, comment]); setCommentText(""); }
+    try {
+      let photoUrl = null;
+      if (commentPhoto) {
+        const ext = (commentPhoto.name.split(".").pop() || "jpg").toLowerCase();
+        const path = `${user.id}/${Date.now()}.${ext}`;
+        const { error: upErr } = await supabase.storage.from("comment-photos").upload(path, commentPhoto, { contentType: commentPhoto.type });
+        if (!upErr) {
+          const { data: pd } = supabase.storage.from("comment-photos").getPublicUrl(path);
+          photoUrl = pd.publicUrl;
+        }
+      }
+      const displayName = userProfile?.display_name || user.email?.split("@")[0] || "Anonymous";
+      const { data: comment } = await supabase.from("recipe_comments").insert({
+        user_id: user.id, recipe_id: rid,
+        content: commentText.trim(), display_name: displayName,
+        photo_url: photoUrl, recipe_name: openRecipe.name,
+      }).select().single();
+      if (comment) {
+        setComments(prev => [...prev, comment]);
+        setCommentText(""); setCommentPhoto(null); setCommentPhotoPreview(null);
+        if (commentPhotoRef.current) commentPhotoRef.current.value = "";
+      }
+    } catch (err) { console.error("Comment submit failed:", err.message); }
     setCommentStatus("idle");
   };
 
@@ -779,13 +800,26 @@ function RecipeModal({ openRecipe, onClose, user, subscribed, setPage }) {
                       <span className="comment-name">{c.display_name}</span>
                       <span className="comment-date">{fmtCommentDate(c.created_at)}</span>
                     </div>
-                    <p className="comment-text">{c.content}</p>
+                    {c.content && <p className="comment-text">{c.content}</p>}
+                    {c.photo_url && (
+                      <div className="comment-photo-wrap">
+                        <img src={c.photo_url} alt="Cook photo" className="comment-photo" onClick={() => window.open(c.photo_url, "_blank")}/>
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
             </div>
             {subscribed ? (
               <form className="comment-form" onSubmit={submitComment}>
+                {commentPhotoPreview && (
+                  <div className="comment-photo-preview">
+                    <img src={commentPhotoPreview} alt="Preview"/>
+                    <button type="button" className="comment-photo-remove" onClick={() => { setCommentPhoto(null); setCommentPhotoPreview(null); if (commentPhotoRef.current) commentPhotoRef.current.value = ""; }}>
+                      <Icon.close/>
+                    </button>
+                  </div>
+                )}
                 <div className="comment-input-row">
                   <div className="comment-avatar sm">{userInitial}</div>
                   <input
@@ -795,8 +829,12 @@ function RecipeModal({ openRecipe, onClose, user, subscribed, setPage }) {
                     onChange={e => setCommentText(e.target.value)}
                     maxLength={500}
                   />
+                  <button type="button" className="comment-photo-btn" title="Add photo" onClick={() => commentPhotoRef.current.click()}>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                  </button>
+                  <input ref={commentPhotoRef} type="file" accept="image/*" style={{display:"none"}} onChange={e => { const f = e.target.files[0]; if (f) { setCommentPhoto(f); setCommentPhotoPreview(URL.createObjectURL(f)); } }}/>
                   <button type="submit" className="comment-submit"
-                    disabled={!commentText.trim() || commentStatus === "submitting"}>
+                    disabled={(!commentText.trim() && !commentPhoto) || commentStatus === "submitting"}>
                     {commentStatus === "submitting" ? "…" : "Post"}
                   </button>
                 </div>
@@ -1335,6 +1373,7 @@ function ProfilePage({ user, subscribed, setPage, setProfilePhoto }) {
   const [profile, setProfile] = useStateP(null);
   const [editMode, setEditMode] = useStateP(false);
   const [nameInput, setNameInput] = useStateP("");
+  const [nameError, setNameError] = useStateP("");
   const [saving, setSaving] = useStateP(false);
   const [activeTab, setActiveTab] = useStateP("saved");
   const [savedIds, setSavedIds] = useStateP([]);
@@ -1343,6 +1382,7 @@ function ProfilePage({ user, subscribed, setPage, setProfilePhoto }) {
   const [openRecipe, setOpenRecipe] = useStateP(null);
   const [photoUrl, setPhotoUrl] = useStateP(null);
   const [avatarLoading, setAvatarLoading] = useStateP(false);
+  const [galleryPhotos, setGalleryPhotos] = useStateP([]);
   const avatarInputRef = React.useRef();
 
   useEffectP(() => {
@@ -1363,6 +1403,10 @@ function ProfilePage({ user, subscribed, setPage, setProfilePhoto }) {
       .then(({ data }) => setLikedIds((data || []).map(r => r.recipe_id)));
     supabase.from("recipes").select("*").eq("published", true)
       .then(({ data }) => setDbRecipes(data || []));
+    supabase.from("recipe_comments").select("id, photo_url, recipe_name, created_at")
+      .eq("user_id", user.id).not("photo_url", "is", null)
+      .order("created_at", { ascending: false })
+      .then(({ data }) => setGalleryPhotos(data || []));
   }, [user]);
 
   const allRecipes = [...RECIPES, ...dbRecipes];
@@ -1370,11 +1414,25 @@ function ProfilePage({ user, subscribed, setPage, setProfilePhoto }) {
   const savedRecipes = allRecipes.filter(r => savedIds.includes(getRid(r)));
   const likedRecipes = allRecipes.filter(r => likedIds.includes(getRid(r)));
 
+  // ── username cooldown helper ──────────────────────────────
+  const getNameCooldown = () => {
+    if (!profile?.display_name_updated_at) return null;
+    const daysSince = (Date.now() - new Date(profile.display_name_updated_at)) / (1000 * 60 * 60 * 24);
+    if (daysSince >= 14) return null;
+    return Math.ceil(14 - daysSince); // days remaining
+  };
+
   const saveName = async () => {
     if (!nameInput.trim()) return;
-    setSaving(true);
-    await supabase.from("profiles").upsert({ id: user.id, display_name: nameInput.trim() }, { onConflict: "id" });
-    setProfile(p => ({ ...p, display_name: nameInput.trim() }));
+    const daysLeft = getNameCooldown();
+    if (daysLeft !== null) {
+      setNameError(`You can change your username again in ${daysLeft} day${daysLeft !== 1 ? "s" : ""}.`);
+      return;
+    }
+    setSaving(true); setNameError("");
+    const now = new Date().toISOString();
+    await supabase.from("profiles").upsert({ id: user.id, display_name: nameInput.trim(), display_name_updated_at: now }, { onConflict: "id" });
+    setProfile(p => ({ ...p, display_name: nameInput.trim(), display_name_updated_at: now }));
     setSaving(false); setEditMode(false);
   };
 
@@ -1411,6 +1469,7 @@ function ProfilePage({ user, subscribed, setPage, setProfilePhoto }) {
   const initial = ((profile?.display_name || user.email || "?")[0] || "?").toUpperCase();
   const displayName = profile?.display_name || user.email?.split("@")[0] || "Chef";
   const activeList = activeTab === "saved" ? savedRecipes : likedRecipes;
+  const nameCooldownDays = getNameCooldown();
 
   return (
     <div className="page">
@@ -1435,21 +1494,29 @@ function ProfilePage({ user, subscribed, setPage, setProfilePhoto }) {
           <div className="profile-info">
             <div className="eyebrow"><span className="dot"></span>{subscribed ? "Subscriber" : "Member"}</div>
             {editMode ? (
-              <div className="profile-edit-row">
-                <input
-                  className="profile-name-input"
-                  value={nameInput}
-                  onChange={e => setNameInput(e.target.value)}
-                  onKeyDown={e => e.key === "Enter" && saveName()}
-                  autoFocus maxLength={40} placeholder="Display name"
-                />
-                <button className="btn" onClick={saveName} disabled={saving}>{saving ? "Saving…" : "Save"}</button>
-                <button className="btn ghost" onClick={() => setEditMode(false)}>Cancel</button>
+              <div>
+                <div className="profile-edit-row">
+                  <input
+                    className="profile-name-input"
+                    value={nameInput}
+                    onChange={e => { setNameInput(e.target.value); setNameError(""); }}
+                    onKeyDown={e => e.key === "Enter" && saveName()}
+                    autoFocus maxLength={40} placeholder="Display name"
+                  />
+                  <button className="btn" onClick={saveName} disabled={saving}>{saving ? "Saving…" : "Save"}</button>
+                  <button className="btn ghost" onClick={() => { setEditMode(false); setNameError(""); }}>Cancel</button>
+                </div>
+                {nameError && <p className="profile-name-error">{nameError}</p>}
               </div>
             ) : (
               <div className="profile-name-row">
                 <h1 className="profile-name">{displayName}</h1>
-                <button className="profile-edit-btn" onClick={() => setEditMode(true)}>Edit name</button>
+                {nameCooldownDays !== null
+                  ? <span className="profile-edit-btn profile-edit-locked" title={`Unlocks in ${nameCooldownDays} day${nameCooldownDays !== 1 ? "s" : ""}`}>
+                      Edit name · {nameCooldownDays}d
+                    </span>
+                  : <button className="profile-edit-btn" onClick={() => setEditMode(true)}>Edit name</button>
+                }
               </div>
             )}
             <div className="profile-email">{user.email}</div>
@@ -1469,35 +1536,62 @@ function ProfilePage({ user, subscribed, setPage, setProfilePhoto }) {
           <button className={"profile-tab" + (activeTab === "liked" ? " active" : "")} onClick={() => setActiveTab("liked")}>
             Liked {likedRecipes.length > 0 && <span className="profile-tab-count">{likedRecipes.length}</span>}
           </button>
+          <button className={"profile-tab" + (activeTab === "gallery" ? " active" : "")} onClick={() => setActiveTab("gallery")}>
+            Gallery {galleryPhotos.length > 0 && <span className="profile-tab-count">{galleryPhotos.length}</span>}
+          </button>
         </div>
 
-        {/* Recipe list */}
-        {activeList.length === 0 ? (
-          <div className="profile-empty">
-            <p>{activeTab === "saved"
-              ? "No saved recipes yet. Open any recipe and hit Save to find it here."
-              : "No liked recipes yet. Open any recipe and tap the heart to like it."
-            }</p>
-            <button className="btn ghost" onClick={() => setPage("recipe")}>Browse Recipes <Icon.arrow className="arrow"/></button>
-          </div>
-        ) : (
-          <div className="recipe-grid" style={{ marginTop: 32 }}>
-            {activeList.map((r, i) => (
-              <div key={i} className="recipe recipe--clickable" onClick={() => setOpenRecipe(r)}>
-                <div className="recipe-img">
-                  {(r.imgs || r.img)
-                    ? <img src={r.imgs ? r.imgs[0] : r.img} alt={r.name} style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}/>
-                    : <image-slot id={"pr-" + r.n} placeholder={r.name}></image-slot>
-                  }
+        {/* Gallery tab */}
+        {activeTab === "gallery" && (
+          galleryPhotos.length === 0 ? (
+            <div className="profile-empty">
+              <p>No cooking photos yet. Comment on any recipe and attach a photo of your version.</p>
+              <button className="btn ghost" onClick={() => setPage("recipe")}>Browse Recipes <Icon.arrow className="arrow"/></button>
+            </div>
+          ) : (
+            <div className="profile-gallery" style={{ marginTop: 32 }}>
+              {galleryPhotos.map(p => (
+                <div key={p.id} className="gallery-item" onClick={() => window.open(p.photo_url, "_blank")}>
+                  <img src={p.photo_url} alt={p.recipe_name || "Cook photo"}/>
+                  <div className="gallery-item-info">
+                    {p.recipe_name && <span className="gallery-recipe-name">{p.recipe_name}</span>}
+                    <span className="gallery-date">{fmtCommentDate(p.created_at)}</span>
+                  </div>
                 </div>
-                <span className="recipe-num">№ {r.n}</span>
-                <h3 className="recipe-name">{r.name}</h3>
-                <div className="recipe-tags">
-                  {(r.tags || []).map((t, j) => <span key={j} className="recipe-tag">{t}</span>)}
+              ))}
+            </div>
+          )
+        )}
+
+        {/* Recipe list (saved / liked) */}
+        {(activeTab === "saved" || activeTab === "liked") && (
+          activeList.length === 0 ? (
+            <div className="profile-empty">
+              <p>{activeTab === "saved"
+                ? "No saved recipes yet. Open any recipe and hit Save to find it here."
+                : "No liked recipes yet. Open any recipe and tap the heart to like it."
+              }</p>
+              <button className="btn ghost" onClick={() => setPage("recipe")}>Browse Recipes <Icon.arrow className="arrow"/></button>
+            </div>
+          ) : (
+            <div className="recipe-grid" style={{ marginTop: 32 }}>
+              {activeList.map((r, i) => (
+                <div key={i} className="recipe recipe--clickable" onClick={() => setOpenRecipe(r)}>
+                  <div className="recipe-img">
+                    {(r.imgs || r.img)
+                      ? <img src={r.imgs ? r.imgs[0] : r.img} alt={r.name} style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}/>
+                      : <image-slot id={"pr-" + r.n} placeholder={r.name}></image-slot>
+                    }
+                  </div>
+                  <span className="recipe-num">№ {r.n}</span>
+                  <h3 className="recipe-name">{r.name}</h3>
+                  <div className="recipe-tags">
+                    {(r.tags || []).map((t, j) => <span key={j} className="recipe-tag">{t}</span>)}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )
         )}
       </section>
 
