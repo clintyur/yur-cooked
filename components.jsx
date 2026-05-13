@@ -40,7 +40,7 @@ const Icon = {
 };
 
 /* ============ Nav ============ */
-function Nav({ page, setPage, user, isAdmin }) {
+function Nav({ page, setPage, user, isAdmin, profilePhoto }) {
   const [open, setOpen] = useState(false);
   useEffect(() => { setOpen(false); }, [page]);
   useEffect(() => {
@@ -72,10 +72,13 @@ function Nav({ page, setPage, user, isAdmin }) {
             )}
             {user ? (
               <>
+                <button className="nav-avatar-btn" onClick={go("profile")} title="My Profile">
+                  {profilePhoto
+                    ? <img src={profilePhoto} alt="Profile" className="nav-avatar-img"/>
+                    : <span className="nav-avatar-initial">{(user.email || "?")[0].toUpperCase()}</span>
+                  }
+                </button>
                 <a href="#" onClick={logout} className="nav-link">Log Out</a>
-                <a href="#" onClick={go("profile")} className={"nav-avatar" + (page === "profile" ? " active" : "")} title="Your profile">
-                  <span className="nav-avatar-circle">{(user.email || "?")[0].toUpperCase()}</span>
-                </a>
               </>
             ) : (
               <a href="#" onClick={(e) => { e.preventDefault(); openAuthModal("login"); }} className="nav-link">Log In</a>

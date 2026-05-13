@@ -69,6 +69,7 @@ function App() {
   const [subscribed, setSubscribed] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [authReady, setAuthReady] = useState(false);
+  const [profilePhoto, setProfilePhoto] = useState(null);
 
   useEffect(() => {
     document.documentElement.style.setProperty("--accent", t.accent);
@@ -84,6 +85,7 @@ function App() {
         setIsAdmin(admin);
         if (admin) setSubscribed(true);
         else checkSubscription(u.id);
+        loadProfilePhoto(u.id);
       }
       setAuthReady(true);
     });
@@ -95,9 +97,11 @@ function App() {
         setIsAdmin(admin);
         if (admin) setSubscribed(true);
         else checkSubscription(u.id);
+        loadProfilePhoto(u.id);
       } else {
         setSubscribed(false);
         setIsAdmin(false);
+        setProfilePhoto(null);
       }
     });
     return () => subscription.unsubscribe();
@@ -106,6 +110,11 @@ function App() {
   const checkSubscription = async (uid) => {
     const { data } = await supabase.from("subscribers").select("subscribed").eq("id", uid).maybeSingle();
     setSubscribed(data?.subscribed === true);
+  };
+
+  const loadProfilePhoto = async (uid) => {
+    const { data } = await supabase.from("profiles").select("photo_url").eq("id", uid).maybeSingle();
+    if (data?.photo_url) setProfilePhoto(data.photo_url);
   };
 
   const Page = {
@@ -130,14 +139,14 @@ function App() {
     profile: "Profile",
   }[page];
 
-  const authProps = { user, subscribed, isAdmin, setUser };
+  const authProps = { user, subscribed, isAdmin, setUser, setProfilePhoto };
 
   if (!authReady) return null;
 
   return (
     <div data-screen-label={screenLabel} className={promo ? "has-promo" : ""}>
       {promo && <PromoBar onClose={() => setPromo(false)} setPage={setPage}/>}
-      <Nav page={page} setPage={setPage} user={user} isAdmin={isAdmin}/>
+      <Nav page={page} setPage={setPage} user={user} isAdmin={isAdmin} profilePhoto={profilePhoto}/>
       <Page setPage={setPage} {...authProps}/>
       <Footer setPage={setPage}/>
 

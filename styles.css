@@ -2579,6 +2579,7 @@ button { font-family: inherit; cursor: pointer; }
   /* ── Profile ── */
   .profile-header { flex-direction: column; gap: 16px; }
   .profile-avatar { width: 56px; height: 56px; font-size: 22px; }
+  .profile-avatar-img { width: 56px; height: 56px; }
   .profile-name { font-size: clamp(24px, 6vw, 36px); }
   .profile-edit-row { flex-wrap: wrap; }
 }
@@ -2731,6 +2732,32 @@ button { font-family: inherit; cursor: pointer; }
   border-bottom: 1px solid var(--rule);
   margin-bottom: 36px;
 }
+.profile-avatar-wrap {
+  position: relative;
+  border-radius: 50%;
+  cursor: pointer;
+  flex-shrink: 0;
+  width: fit-content;
+}
+.profile-avatar-wrap:hover .profile-avatar-overlay { opacity: 1; }
+.profile-avatar-overlay {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.52);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.22s ease;
+  pointer-events: none;
+}
+.profile-avatar-img {
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
 .profile-avatar {
   width: 72px; height: 72px;
   border-radius: 50%;
@@ -2745,6 +2772,37 @@ button { font-family: inherit; cursor: pointer; }
   text-transform: uppercase;
   flex-shrink: 0;
   letter-spacing: 0;
+}
+
+/* Nav avatar */
+.nav-avatar-btn {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1.5px solid var(--ink);
+  background: var(--ink);
+  cursor: pointer;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.15s;
+  vertical-align: middle;
+}
+.nav-avatar-btn:hover { opacity: 0.7; }
+.nav-avatar-img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 50%;
+}
+.nav-avatar-initial {
+  color: var(--cream);
+  font-family: var(--display);
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1;
+  text-transform: uppercase;
 }
 .profile-info { flex: 1; min-width: 0; }
 .profile-name-row { display: flex; align-items: baseline; gap: 14px; margin-top: 4px; flex-wrap: wrap; }

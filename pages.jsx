@@ -1331,7 +1331,7 @@ function SubscribePage({ setPage }) {
 }
 
 /* ============ PROFILE ============ */
-function ProfilePage({ user, subscribed, setPage }) {
+function ProfilePage({ user, subscribed, setPage, setProfilePhoto }) {
   const [profile, setProfile] = useStateP(null);
   const [editMode, setEditMode] = useStateP(false);
   const [nameInput, setNameInput] = useStateP("");
@@ -1341,12 +1341,15 @@ function ProfilePage({ user, subscribed, setPage }) {
   const [likedIds, setLikedIds] = useStateP([]);
   const [dbRecipes, setDbRecipes] = useStateP([]);
   const [openRecipe, setOpenRecipe] = useStateP(null);
+  const [photoUrl, setPhotoUrl] = useStateP(null);
+  const [avatarLoading, setAvatarLoading] = useStateP(false);
+  const avatarInputRef = React.useRef();
 
   useEffectP(() => {
-    if (!user) return; // wait for auth — don't redirect
+    if (!user) return;
     supabase.from("profiles").select("*").eq("id", user.id).maybeSingle().then(({ data }) => {
       if (data) {
-        setProfile(data); setNameInput(data.display_name || "");
+        setProfile(data); setNameInput(data.display_name || ""); setPhotoUrl(data.photo_url || null);
       } else {
         const dn = user.email?.split("@")[0] || "chef";
         supabase.from("profiles").upsert({ id: user.id, display_name: dn }, { onConflict: "id" }).then(() => {
@@ -1370,9 +1373,31 @@ function ProfilePage({ user, subscribed, setPage }) {
   const saveName = async () => {
     if (!nameInput.trim()) return;
     setSaving(true);
-    await supabase.from("profiles").upsert({ id: user.id, display_name: nameInput.trim() });
+    await supabase.from("profiles").upsert({ id: user.id, display_name: nameInput.trim() }, { onConflict: "id" });
     setProfile(p => ({ ...p, display_name: nameInput.trim() }));
     setSaving(false); setEditMode(false);
+  };
+
+  const uploadAvatar = async (e) => {
+    const file = e.target.files[0];
+    if (!file || !user) return;
+    setAvatarLoading(true);
+    try {
+      const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
+      const path = `${user.id}/avatar.${ext}`;
+      const { error } = await supabase.storage.from("avatars").upload(path, file, { upsert: true, contentType: file.type });
+      if (error) throw error;
+      const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(path);
+      const url = urlData.publicUrl + "?t=" + Date.now(); // cache bust
+      await supabase.from("profiles").upsert({ id: user.id, photo_url: url }, { onConflict: "id" });
+      setPhotoUrl(url);
+      setProfile(p => ({ ...p, photo_url: url }));
+      if (setProfilePhoto) setProfilePhoto(url);
+    } catch (err) {
+      console.error("Avatar upload failed:", err.message);
+    }
+    setAvatarLoading(false);
+    e.target.value = "";
   };
 
   if (!user) return (
@@ -1393,7 +1418,20 @@ function ProfilePage({ user, subscribed, setPage }) {
 
         {/* Profile header */}
         <div className="profile-header">
-          <div className="profile-avatar">{initial}</div>
+          {/* Avatar with photo upload */}
+          <div className="profile-avatar-wrap" onClick={() => !avatarLoading && avatarInputRef.current.click()} title="Change photo">
+            {photoUrl
+              ? <img src={photoUrl} alt={displayName} className="profile-avatar-img"/>
+              : <div className="profile-avatar">{initial}</div>
+            }
+            <div className="profile-avatar-overlay">
+              {avatarLoading
+                ? <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+                : <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              }
+            </div>
+            <input ref={avatarInputRef} type="file" accept="image/*" style={{display:"none"}} onChange={uploadAvatar}/>
+          </div>
           <div className="profile-info">
             <div className="eyebrow"><span className="dot"></span>{subscribed ? "Subscriber" : "Member"}</div>
             {editMode ? (
