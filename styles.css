@@ -2578,10 +2578,34 @@ button { font-family: inherit; cursor: pointer; }
 
   /* ── Profile ── */
   .profile-header { flex-direction: column; gap: 16px; }
-  .profile-avatar { width: 56px; height: 56px; font-size: 22px; }
-  .profile-avatar-img { width: 56px; height: 56px; }
+  .profile-avatar { width: 64px; height: 64px; font-size: 24px; }
+  .profile-avatar-img { width: 64px; height: 64px; }
+  /* Always show overlay hint on touch devices (no hover) */
+  .profile-avatar-overlay { opacity: 0.82; }
+  .profile-avatar-wrap:hover .profile-avatar-overlay { opacity: 0.82; }
   .profile-name { font-size: clamp(24px, 6vw, 36px); }
   .profile-edit-row { flex-wrap: wrap; }
+
+  /* Profile tabs — 3 tabs need tighter padding */
+  .profile-tab { padding: 12px 14px; font-size: 10px; letter-spacing: .07em; }
+
+  /* Gallery — 2 columns on mobile, info always visible */
+  .profile-gallery { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .gallery-item-info { opacity: 1; }
+
+  /* Comment form — stack photo button + submit on second line */
+  .comment-input-row { flex-wrap: wrap; gap: 8px; }
+  .comment-input { order: 1; min-width: 0; }
+  .comment-avatar.sm { order: 0; }
+  .comment-photo-btn { order: 2; margin-left: auto; }
+  .comment-submit { order: 3; }
+
+  /* Comment photo in thread — don't overflow */
+  .comment-photo { max-width: 100%; }
+  .comment-photo-preview img { max-width: 100%; }
+
+  /* Nav avatar size on mobile (in desktop nav, not shown — but just in case) */
+  .nav-avatar-btn { width: 26px; height: 26px; }
 }
 
 /* ============================================================
@@ -2907,7 +2931,7 @@ button { font-family: inherit; cursor: pointer; }
 /* Profile gallery grid */
 .profile-gallery {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   gap: 12px;
 }
 .gallery-item {
@@ -2970,15 +2994,17 @@ button { font-family: inherit; cursor: pointer; }
 /* Comment photo preview */
 .comment-photo-preview {
   position: relative;
-  display: inline-block;
+  display: block;
   margin-bottom: 10px;
   border-radius: 6px;
   overflow: hidden;
+  width: fit-content;
+  max-width: 100%;
 }
 .comment-photo-preview img {
   display: block;
   max-height: 140px;
-  max-width: 220px;
+  max-width: min(220px, 100%);
   object-fit: cover;
   border-radius: 6px;
   border: 1px solid var(--rule);
