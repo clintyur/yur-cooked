@@ -2576,6 +2576,9 @@ button { font-family: inherit; cursor: pointer; }
   .recipe-form { padding: 20px; }
   .recipe-form-row { flex-direction: column; }
 
+  /* ── Shop modal — limit image height so info is visible ── */
+  .modal-img { aspect-ratio: unset; height: 240px; }
+
   /* ── Profile ── */
   .profile-header { flex-direction: column; gap: 16px; }
   .profile-avatar { width: 64px; height: 64px; font-size: 24px; }
@@ -2584,7 +2587,8 @@ button { font-family: inherit; cursor: pointer; }
   .profile-avatar-overlay { opacity: 0.82; }
   .profile-avatar-wrap:hover .profile-avatar-overlay { opacity: 0.82; }
   .profile-name { font-size: clamp(24px, 6vw, 36px); }
-  .profile-edit-row { flex-wrap: wrap; }
+  .profile-edit-row { flex-wrap: wrap; gap: 8px; }
+  .profile-name-input { min-width: 120px; font-size: 18px; }
 
   /* Profile tabs — 3 tabs need tighter padding */
   .profile-tab { padding: 12px 14px; font-size: 10px; letter-spacing: .07em; }
@@ -2593,18 +2597,48 @@ button { font-family: inherit; cursor: pointer; }
   .profile-gallery { grid-template-columns: repeat(2, 1fr); gap: 8px; }
   .gallery-item-info { opacity: 1; }
 
-  /* Comment form — stack photo button + submit on second line */
-  .comment-input-row { flex-wrap: wrap; gap: 8px; }
-  .comment-input { order: 1; min-width: 0; }
-  .comment-avatar.sm { order: 0; }
-  .comment-photo-btn { order: 2; margin-left: auto; }
-  .comment-submit { order: 3; }
+  /* Comment form — 2-row grid: avatar|input on row 1, avatar|actions on row 2 */
+  .comment-input-row {
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    grid-template-rows: auto auto;
+    gap: 8px;
+    align-items: center;
+  }
+  .comment-avatar.sm {
+    grid-column: 1;
+    grid-row: 1 / 3;
+    align-self: start;
+    margin-top: 6px;
+  }
+  .comment-input {
+    grid-column: 2;
+    grid-row: 1;
+    min-width: 0;
+  }
+  .comment-form-actions {
+    grid-column: 2;
+    grid-row: 2;
+    justify-content: flex-end;
+  }
 
   /* Comment photo in thread — don't overflow */
   .comment-photo { max-width: 100%; }
   .comment-photo-preview img { max-width: 100%; }
 
-  /* Nav avatar size on mobile (in desktop nav, not shown — but just in case) */
+  /* Profile tabs — scrollable if 3 tabs overflow */
+  .profile-tabs-row {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .profile-tabs-row::-webkit-scrollbar { display: none; }
+  .profile-tab { flex-shrink: 0; }
+
+  /* Like / Save — bigger tap targets */
+  .recipe-interact-btn { padding: 10px 16px; min-height: 44px; }
+
+  /* Nav avatar — not shown on mobile (desktop nav is hidden) */
   .nav-avatar-btn { width: 26px; height: 26px; }
 }
 
@@ -2681,6 +2715,7 @@ button { font-family: inherit; cursor: pointer; }
 .comment-text { margin: 0; font-size: 14px; line-height: 1.55; color: var(--ink-2); }
 .comment-form { margin-top: 16px; }
 .comment-input-row { display: flex; align-items: center; gap: 10px; }
+.comment-form-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
 .comment-input {
   flex: 1;
   padding: 8px 14px;

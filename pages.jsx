@@ -829,14 +829,16 @@ function RecipeModal({ openRecipe, onClose, user, subscribed, setPage }) {
                     onChange={e => setCommentText(e.target.value)}
                     maxLength={500}
                   />
-                  <button type="button" className="comment-photo-btn" title="Add photo" onClick={() => commentPhotoRef.current.click()}>
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-                  </button>
-                  <input ref={commentPhotoRef} type="file" accept="image/*" style={{display:"none"}} onChange={e => { const f = e.target.files[0]; if (f) { setCommentPhoto(f); setCommentPhotoPreview(URL.createObjectURL(f)); } }}/>
-                  <button type="submit" className="comment-submit"
-                    disabled={(!commentText.trim() && !commentPhoto) || commentStatus === "submitting"}>
-                    {commentStatus === "submitting" ? "…" : "Post"}
-                  </button>
+                  <div className="comment-form-actions">
+                    <button type="button" className="comment-photo-btn" title="Add photo" onClick={() => commentPhotoRef.current.click()}>
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                    </button>
+                    <input ref={commentPhotoRef} type="file" accept="image/*" style={{display:"none"}} onChange={e => { const f = e.target.files[0]; if (f) { setCommentPhoto(f); setCommentPhotoPreview(URL.createObjectURL(f)); } }}/>
+                    <button type="submit" className="comment-submit"
+                      disabled={(!commentText.trim() && !commentPhoto) || commentStatus === "submitting"}>
+                      {commentStatus === "submitting" ? "…" : "Post"}
+                    </button>
+                  </div>
                 </div>
               </form>
             ) : (
