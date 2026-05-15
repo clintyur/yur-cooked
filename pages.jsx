@@ -1012,10 +1012,7 @@ function ShopPage() {
               </div>
               <div className="cluster" style={{ justifyContent: "space-between", marginTop: "auto", paddingTop: 24, borderTop: "1px solid var(--rule)" }}>
                 <span className="book-price" style={{ fontSize: 28 }}>{open.price}</span>
-                {open.tag === "Coming Soon"
-                  ? <span className="btn ghost" style={{ opacity: 0.5, cursor: "default" }}>Coming Soon</span>
-                  : <a href="#" className="btn">Add to Bag <Icon.arrow className="arrow"/></a>
-                }
+                <span className="btn ghost" style={{ opacity: 0.5, cursor: "default" }}>Available at Launch</span>
               </div>
             </div>
           </div>
