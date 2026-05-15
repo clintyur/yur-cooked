@@ -950,73 +950,12 @@ function ShopPage() {
   const items = filter === "All" ? PRODUCTS : PRODUCTS.filter((p) => p.cat === filter);
 
   return (
-    <div className="page">
-      <section className="container" style={{ paddingTop: 60 }}>
-        <div className="section-head" style={{ marginBottom: 24 }}>
-          <div>
-            <div className="eyebrow"><span className="dot"></span>The Goods</div>
-            <h2 className="section-title">Shop.</h2>
-          </div>
-          <p className="section-lede">A small line of things I actually wear and use every day. Made in small production runs in the USA — built to last.</p>
-        </div>
-
-        <div className="cluster" style={{ borderTop: "1px solid var(--rule)", borderBottom: "1px solid var(--rule)", padding: "16px 0", margin: "24px 0 56px", justifyContent: "space-between" }}>
-          <div className="cluster" style={{ gap: 8 }}>
-            {cats.map((c) => (
-              <button key={c} className={"form pill" + (filter === c ? " active" : "")}
-                style={{ display: "inline-block", padding: "8px 14px", border: "1px solid var(--rule)", background: filter === c ? "var(--ink)" : "transparent", color: filter === c ? "var(--cream)" : "var(--ink)", borderRadius: 100, fontSize: 12, letterSpacing: ".06em" }}
-                onClick={() => setFilter(c)}>{c}</button>
-            ))}
-          </div>
-          <span className="eyebrow">{items.length} items</span>
-        </div>
-
-        <div className="shop-grid">
-          {items.map((p) => (
-            <div key={p.id} className="product" onClick={() => setOpen(p)}>
-              <div className="product-img">
-                <div className="product-tag-row">
-                  {p.tag && <span className={"product-tag" + (p.tag === "Limited" ? " alt" : "")}>{p.tag}</span>}
-                  <span></span>
-                </div>
-                <span className="quick">Quick View</span>
-                <image-slot id={p.id} placeholder={p.name}></image-slot>
-              </div>
-              <span className="product-cat">{p.cat}</span>
-              <div className="product-meta">
-                <h3 className="product-name">{p.name}</h3>
-                <span className="product-price">{p.price}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <div className={"modal-bg" + (open ? " open" : "")} onClick={() => setOpen(null)}>
-        {open && (
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <button className="modal-close" onClick={() => setOpen(null)}><Icon.close/></button>
-            <div className="modal-img">
-              <image-slot id={"modal-" + open.id} placeholder={open.name}></image-slot>
-            </div>
-            <div className="modal-info">
-              <div className="eyebrow"><span className="dot"></span>{open.cat}</div>
-              <h2 className="section-title" style={{ fontSize: 44, lineHeight: 1 }}>{open.name}</h2>
-              <p style={{ color: "var(--ink-2)", lineHeight: 1.6, fontSize: 16 }}>
-                Cut from heavyweight cotton canvas with double-stitched seams and reinforced straps. Designed to take heat, oil, and the occasional knife slip. Pre-washed for softness; gets better with age.
-              </p>
-              <div className="cluster" style={{ marginTop: 8 }}>
-                {["XS","S","M","L","XL"].map((s, i) => (
-                  <button key={s} className="pill" style={{ padding: "10px 16px", border: "1px solid var(--rule)", background: i === 2 ? "var(--ink)" : "transparent", color: i === 2 ? "var(--cream)" : "var(--ink)", borderRadius: 4, fontSize: 13 }}>{s}</button>
-                ))}
-              </div>
-              <div className="cluster" style={{ justifyContent: "space-between", marginTop: "auto", paddingTop: 24, borderTop: "1px solid var(--rule)" }}>
-                <span className="book-price" style={{ fontSize: 28 }}>{open.price}</span>
-                <span className="btn ghost" style={{ opacity: 0.5, cursor: "default" }}>Available at Launch</span>
-              </div>
-            </div>
-          </div>
-        )}
+    <div className="page shop-coming-soon-page">
+      <div className="shop-cs-wrap">
+        <div className="eyebrow" style={{ marginBottom: 24 }}><span className="dot"></span>The Goods</div>
+        <h1 className="shop-cs-title">Coming<br/>Soon.</h1>
+        <p className="shop-cs-sub">A small line of things I actually wear and use every day — aprons, denim, tools, and more. Made in small production runs in the USA, built to last. Drop drops at launch.</p>
+        <div className="shop-cs-tag">Stay tuned</div>
       </div>
     </div>
   );
