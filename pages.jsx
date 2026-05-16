@@ -478,7 +478,7 @@ const RECIPES = [
   },
   {
     n: "07",
-    name: "Arugula Caesar with Pistachio-Panko Crunch",
+    name: "Arugula Caesar with Toasted Pistachio-Panko Crunch",
     tags: ["Salads", "30 min"],
     serves: "2–4",
     imgs: ["images/arugula-caesar-01.jpg", "images/arugula-caesar-02.jpg", "images/arugula-caesar-03.jpg", "images/arugula-caesar-04.jpg"],
