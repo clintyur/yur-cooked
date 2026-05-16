@@ -3337,11 +3337,11 @@ button { font-family: inherit; cursor: pointer; }
   border: none;
   cursor: pointer;
   padding: 0;
-  aspect-ratio: 1;
   overflow: hidden;
   border-radius: 4px;
+  display: block;
 }
-.gif-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.gif-item img { width: 100%; height: auto; display: block; }
 .gif-item:hover { opacity: 0.82; }
 .gif-loading {
   grid-column: 1/-1;
