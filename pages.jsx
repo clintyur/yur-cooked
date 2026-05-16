@@ -20,7 +20,7 @@ const GOOEY_WORDMARK = false;
 
 // ─── GIPHY ───────────────────────────────────────────────────────────────────
 // Get a free key at https://developers.giphy.com → Create an App
-const GIPHY_KEY = "YOUR_GIPHY_API_KEY";
+const GIPHY_KEY = "wmXIAVxscL3Exy0jS89T9zePSrQjeyZi";
 // ─────────────────────────────────────────────────────────────────────────────
 
 function GifPicker({ onSelect, onClose }) {
