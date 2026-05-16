@@ -1414,28 +1414,39 @@ button { font-family: inherit; cursor: pointer; }
 .ticker {
   background: var(--ink);
   color: var(--cream);
-  padding: 18px 0;
   overflow: hidden;
   border-block: 1px solid var(--ink);
 }
 .ticker-track {
   display: inline-flex;
-  gap: 56px;
+  gap: 40px;
   white-space: nowrap;
-  animation: ticker 40s linear infinite;
+  animation: ticker 55s linear infinite;
   font-family: var(--display);
   font-weight: 600;
-  font-size: 18px;
+  font-size: 15px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   align-items: center;
+  height: 96px;
+  padding: 0 20px;
 }
 .ticker-track .it { font-style: italic; color: var(--accent); }
 .ticker-track .sep {
-  width: 8px; height: 8px;
+  width: 6px; height: 6px;
   border-radius: 50%;
   background: var(--accent);
   display: inline-block;
+  flex-shrink: 0;
+}
+.ticker-img {
+  height: 80px;
+  width: 110px;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  flex-shrink: 0;
+  border-radius: 6px;
 }
 @keyframes ticker {
   from { transform: translateX(0); }

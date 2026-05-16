@@ -167,9 +167,12 @@ function Footer({ setPage }) {
 function Ticker({ items }) {
   const content = (
     <>
-      {items.map((t, i) => (
+      {items.map((item, i) => (
         <React.Fragment key={i}>
-          <span className={i % 2 ? "it" : ""}>{t}</span>
+          {typeof item === "string"
+            ? <span className={i % 2 ? "it" : ""}>{item}</span>
+            : <img className="ticker-img" src={item.img} alt={item.alt || ""}/>
+          }
           <span className="sep"></span>
         </React.Fragment>
       ))}

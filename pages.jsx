@@ -1088,7 +1088,24 @@ function RecipeBookPage({ setPage, user, subscribed }) {
         </div>
       </section>
 
-      <Ticker items={[`${allRecipes.length} Recipes`, "Free to Explore", "Updated Every Two Weeks", "Made in NYC", "Vol. 01"]}/>
+      <Ticker items={[
+        { img: "images/omelette-01.jpg",        alt: "Spanish Omelette" },
+        "Free to Explore",
+        { img: "images/luther-burger.jpg",       alt: "Luther Burger" },
+        { img: "images/confit-leeks-01.jpg",     alt: "Confit Leeks & Burrata" },
+        "Updated Every Two Weeks",
+        { img: "images/fried-chicken-01.jpg",    alt: "Fried Chicken" },
+        { img: "images/chicken-kale-pasta.jpg",  alt: "Creamy Chicken & Kale Pasta" },
+        { img: "images/cake-olive-oil.jpg",      alt: "Olive Oil Cake" },
+        { img: "images/jerk-chicken-01.jpg",     alt: "Jerk Chicken" },
+        { img: "images/tomato-tart.jpg",         alt: "Tomato Tart" },
+        { img: "images/crispy-gnocchi.jpg",      alt: "Crispy Gnocchi" },
+        { img: "images/duck-fat-potatoes.jpg",   alt: "Duck Fat Potatoes" },
+        { img: "images/fried-chicken-03.jpg",    alt: "Fried Chicken" },
+        { img: "images/omelette-02.jpg",         alt: "Spanish Omelette" },
+        { img: "images/confit-leeks-02.jpg",     alt: "Confit Leeks" },
+        { img: "images/jerk-chicken-02.jpg",     alt: "Jerk Chicken" },
+      ]}/>
 
       <section id="recipes" className="container section">
         <div className="section-head">
