@@ -18,6 +18,92 @@ const fmtCommentDate = (s) => {
 const GOOEY_WORDMARK = false;
 // ─────────────────────────────────────────────────────────────────────────────
 
+// ─── GIPHY ───────────────────────────────────────────────────────────────────
+// Get a free key at https://developers.giphy.com → Create an App
+const GIPHY_KEY = "YOUR_GIPHY_API_KEY";
+// ─────────────────────────────────────────────────────────────────────────────
+
+function GifPicker({ onSelect, onClose }) {
+  const [query, setQuery] = useStateP("");
+  const [gifs, setGifs] = useStateP([]);
+  const [loading, setLoading] = useStateP(false);
+  const [tab, setTab] = useStateP("trending");
+  const [recent, setRecent] = useStateP(() => {
+    try { return JSON.parse(localStorage.getItem("recentGifs") || "[]"); } catch(e) { return []; }
+  });
+
+  useEffectP(() => {
+    if (tab === "recent") return;
+    setLoading(true);
+    const t = setTimeout(() => {
+      const url = query.trim()
+        ? `https://api.giphy.com/v1/gifs/search?api_key=${GIPHY_KEY}&q=${encodeURIComponent(query.trim())}&limit=24&rating=g`
+        : `https://api.giphy.com/v1/gifs/trending?api_key=${GIPHY_KEY}&limit=24&rating=g`;
+      fetch(url)
+        .then(r => r.json())
+        .then(j => { setGifs(j.data || []); setLoading(false); })
+        .catch(() => setLoading(false));
+    }, query ? 350 : 0);
+    return () => clearTimeout(t);
+  }, [query, tab]);
+
+  const handleSelect = (gif) => {
+    const url = gif.images.downsized_medium?.url || gif.images.fixed_height?.url;
+    const thumb = gif.images.fixed_height_small?.url || gif.images.fixed_height?.url;
+    const entry = { id: gif.id, url, thumb, title: gif.title };
+    const newRecent = [entry, ...recent.filter(r => r.id !== gif.id)].slice(0, 16);
+    setRecent(newRecent);
+    try { localStorage.setItem("recentGifs", JSON.stringify(newRecent)); } catch(e) {}
+    onSelect(url);
+  };
+
+  const displayGifs = tab === "recent" ? recent : gifs;
+
+  return (
+    <div className="gif-picker" onClick={e => e.stopPropagation()}>
+      <div className="gif-picker-header">
+        <div className="gif-search-wrap">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input
+            className="gif-search-input"
+            type="text"
+            placeholder="Search GIFs…"
+            value={query}
+            onChange={e => { setQuery(e.target.value); if (tab === "recent") setTab("trending"); }}
+            autoFocus
+          />
+          {query && <button className="gif-search-clear" type="button" onClick={() => setQuery("")}>×</button>}
+        </div>
+        <button className="gif-cancel" type="button" onClick={onClose}>Cancel</button>
+      </div>
+      <div className="gif-tabs">
+        <button className={"gif-tab" + (tab === "trending" ? " active" : "")} type="button" onClick={() => { setTab("trending"); }}>Trending</button>
+        <button className={"gif-tab" + (tab === "recent" ? " active" : "")} type="button" onClick={() => setTab("recent")}>Recent</button>
+      </div>
+      <div className="gif-grid">
+        {tab === "recent" ? (
+          recent.length === 0
+            ? <p className="gif-empty">No recent GIFs yet</p>
+            : recent.map(e => (
+                <button key={e.id} className="gif-item" type="button" onClick={() => onSelect(e.url)}>
+                  <img src={e.thumb || e.url} alt={e.title}/>
+                </button>
+              ))
+        ) : loading ? (
+          <div className="gif-loading">Loading…</div>
+        ) : (
+          gifs.map(gif => (
+            <button key={gif.id} className="gif-item" type="button" onClick={() => handleSelect(gif)}>
+              <img src={gif.images.fixed_height_small?.url || gif.images.downsized?.url} alt={gif.title}/>
+            </button>
+          ))
+        )}
+      </div>
+      <div className="gif-powered">Powered by GIPHY</div>
+    </div>
+  );
+}
+
 /* ============ HOME ============ */
 function HomePage({ setPage }) {
   const go = (p) => (e) => { e.preventDefault(); setPage(p); window.scrollTo({ top: 0, behavior: "instant" }); };
@@ -603,6 +689,12 @@ function RecipeModal({ openRecipe, onClose, user, subscribed, setPage }) {
   const [commentPhoto, setCommentPhoto] = useStateP(null);
   const [commentPhotoPreview, setCommentPhotoPreview] = useStateP(null);
   const commentPhotoRef = React.useRef();
+  const [commentGif, setCommentGif] = useStateP(null);
+  const [gifPickerOpen, setGifPickerOpen] = useStateP(false);
+  const [replyingTo, setReplyingTo] = useStateP(null);
+  const [replyText, setReplyText] = useStateP("");
+  const [likedCommentIds, setLikedCommentIds] = useStateP(new Set());
+  const [commentLikeCounts, setCommentLikeCounts] = useStateP({});
 
   useEffectP(() => {
     if (!openRecipe) return;
@@ -610,6 +702,9 @@ function RecipeModal({ openRecipe, onClose, user, subscribed, setPage }) {
     setLikeCount(0); setLiked(false); setSaved(false);
     setComments([]); setCommentText(""); setCommentStatus("idle");
     setCommentPhoto(null); setCommentPhotoPreview(null);
+    setCommentGif(null); setGifPickerOpen(false);
+    setReplyingTo(null); setReplyText("");
+    setLikedCommentIds(new Set()); setCommentLikeCounts({});
 
     const rid = openRecipe.id ? String(openRecipe.id) : ("r-" + openRecipe.n);
 
@@ -617,7 +712,22 @@ function RecipeModal({ openRecipe, onClose, user, subscribed, setPage }) {
       .then(({ count }) => setLikeCount(count || 0));
     supabase.from("recipe_comments").select("*").eq("recipe_id", rid)
       .order("created_at", { ascending: true })
-      .then(({ data }) => setComments(data || []));
+      .then(({ data }) => {
+        setComments(data || []);
+        if (data && data.length > 0) {
+          const ids = data.map(c => c.id);
+          supabase.from("comment_likes").select("comment_id").in("comment_id", ids)
+            .then(({ data: lk }) => {
+              const counts = {};
+              (lk || []).forEach(l => { counts[l.comment_id] = (counts[l.comment_id] || 0) + 1; });
+              setCommentLikeCounts(counts);
+            });
+          if (user) {
+            supabase.from("comment_likes").select("comment_id").in("comment_id", ids).eq("user_id", user.id)
+              .then(({ data: myLk }) => setLikedCommentIds(new Set((myLk || []).map(l => l.comment_id))));
+          }
+        }
+      });
 
     if (user) {
       supabase.from("recipe_likes").select("id").eq("recipe_id", rid).eq("user_id", user.id).maybeSingle()
@@ -655,9 +765,38 @@ function RecipeModal({ openRecipe, onClose, user, subscribed, setPage }) {
     }
   };
 
+  const toggleCommentLike = async (commentId) => {
+    if (!user) { openAuthModal("login"); return; }
+    const isLiked = likedCommentIds.has(commentId);
+    if (isLiked) {
+      setLikedCommentIds(prev => { const s = new Set(prev); s.delete(commentId); return s; });
+      setCommentLikeCounts(prev => ({ ...prev, [commentId]: Math.max(0, (prev[commentId] || 1) - 1) }));
+      await supabase.from("comment_likes").delete().eq("comment_id", commentId).eq("user_id", user.id);
+    } else {
+      setLikedCommentIds(prev => new Set([...prev, commentId]));
+      setCommentLikeCounts(prev => ({ ...prev, [commentId]: (prev[commentId] || 0) + 1 }));
+      await supabase.from("comment_likes").insert({ comment_id: commentId, user_id: user.id });
+    }
+  };
+
+  const submitReply = async (e, parentId) => {
+    e.preventDefault();
+    if (!replyText.trim() || !user) return;
+    const displayName = userProfile?.display_name || user.email?.split("@")[0] || "Anonymous";
+    const { data: reply } = await supabase.from("recipe_comments").insert({
+      user_id: user.id, recipe_id: rid,
+      content: replyText.trim(), display_name: displayName,
+      parent_id: parentId, recipe_name: openRecipe.name,
+    }).select().single();
+    if (reply) {
+      setComments(prev => [...prev, reply]);
+      setReplyText(""); setReplyingTo(null);
+    }
+  };
+
   const submitComment = async (e) => {
     e.preventDefault();
-    if ((!commentText.trim() && !commentPhoto) || commentStatus === "submitting" || !user) return;
+    if ((!commentText.trim() && !commentPhoto && !commentGif) || commentStatus === "submitting" || !user) return;
     setCommentStatus("submitting");
     try {
       let photoUrl = null;
@@ -674,11 +813,13 @@ function RecipeModal({ openRecipe, onClose, user, subscribed, setPage }) {
       const { data: comment } = await supabase.from("recipe_comments").insert({
         user_id: user.id, recipe_id: rid,
         content: commentText.trim(), display_name: displayName,
-        photo_url: photoUrl, recipe_name: openRecipe.name,
+        photo_url: photoUrl, gif_url: commentGif || null,
+        recipe_name: openRecipe.name,
       }).select().single();
       if (comment) {
         setComments(prev => [...prev, comment]);
         setCommentText(""); setCommentPhoto(null); setCommentPhotoPreview(null);
+        setCommentGif(null);
         if (commentPhotoRef.current) commentPhotoRef.current.value = "";
       }
     } catch (err) { console.error("Comment submit failed:", err.message); }
@@ -785,68 +926,124 @@ function RecipeModal({ openRecipe, onClose, user, subscribed, setPage }) {
           )}
 
           {/* Comments — visible to everyone */}
-          <div className="recipe-comments">
-            <div className="recipe-comments-header">
-              <span className="recipe-comments-title">
-                {comments.length === 0 ? "No comments yet" : `${comments.length} comment${comments.length !== 1 ? "s" : ""}`}
-              </span>
-            </div>
-            <div className="comments-list">
-              {comments.map(c => (
-                <div key={c.id} className="comment">
-                  <div className="comment-avatar">{(c.display_name || "A")[0].toUpperCase()}</div>
-                  <div className="comment-body">
-                    <div className="comment-meta">
-                      <span className="comment-name">{c.display_name}</span>
-                      <span className="comment-date">{fmtCommentDate(c.created_at)}</span>
-                    </div>
-                    {c.content && <p className="comment-text">{c.content}</p>}
-                    {c.photo_url && (
-                      <div className="comment-photo-wrap">
-                        <img src={c.photo_url} alt="Cook photo" className="comment-photo" onClick={() => window.open(c.photo_url, "_blank")}/>
-                      </div>
+          {(() => {
+            const topLevel = comments.filter(c => !c.parent_id);
+            const repliesMap = {};
+            comments.filter(c => c.parent_id).forEach(r => {
+              (repliesMap[r.parent_id] = repliesMap[r.parent_id] || []).push(r);
+            });
+
+            const renderComment = (c, isReply) => (
+              <div key={c.id} className={"comment" + (isReply ? " reply" : "")}>
+                <div className={"comment-avatar" + (isReply ? " sm" : "")}>{(c.display_name || "A")[0].toUpperCase()}</div>
+                <div className="comment-body">
+                  <div className="comment-meta">
+                    <span className="comment-name">{c.display_name}</span>
+                    <span className="comment-date">{fmtCommentDate(c.created_at)}</span>
+                  </div>
+                  {c.content && <p className="comment-text">{c.content}</p>}
+                  {c.gif_url && <img src={c.gif_url} alt="GIF" className="comment-gif-img" onClick={() => window.open(c.gif_url, "_blank")}/>}
+                  {c.photo_url && !c.gif_url && (
+                    <img src={c.photo_url} alt="Cook photo" className="comment-photo" onClick={() => window.open(c.photo_url, "_blank")}/>
+                  )}
+                  <div className="comment-actions">
+                    <button className={"comment-like-btn" + (likedCommentIds.has(c.id) ? " liked" : "")} type="button" onClick={() => toggleCommentLike(c.id)}>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill={likedCommentIds.has(c.id) ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                      </svg>
+                      {commentLikeCounts[c.id] > 0 && <span>{commentLikeCounts[c.id]}</span>}
+                    </button>
+                    {!isReply && user && subscribed && (
+                      <button className="comment-reply-btn" type="button"
+                        onClick={() => setReplyingTo(replyingTo?.id === c.id ? null : { id: c.id, display_name: c.display_name })}>
+                        Reply
+                      </button>
                     )}
                   </div>
+                  {replyingTo?.id === c.id && (
+                    <form className="reply-form" onSubmit={e => submitReply(e, c.id)}>
+                      <div className="comment-avatar sm">{userInitial}</div>
+                      <input
+                        className="comment-input"
+                        placeholder={`Reply to ${c.display_name}…`}
+                        value={replyText}
+                        onChange={e => setReplyText(e.target.value)}
+                        autoFocus
+                        maxLength={500}
+                      />
+                      <button className="comment-submit" type="submit" disabled={!replyText.trim()}>Post</button>
+                      <button className="reply-cancel-btn" type="button" onClick={() => { setReplyingTo(null); setReplyText(""); }}>×</button>
+                    </form>
+                  )}
+                  {!isReply && repliesMap[c.id]?.length > 0 && (
+                    <div className="comment-replies">
+                      {repliesMap[c.id].map(r => renderComment(r, true))}
+                    </div>
+                  )}
                 </div>
-              ))}
-            </div>
-            {subscribed ? (
-              <form className="comment-form" onSubmit={submitComment}>
-                {commentPhotoPreview && (
-                  <div className="comment-photo-preview">
-                    <img src={commentPhotoPreview} alt="Preview"/>
-                    <button type="button" className="comment-photo-remove" onClick={() => { setCommentPhoto(null); setCommentPhotoPreview(null); if (commentPhotoRef.current) commentPhotoRef.current.value = ""; }}>
-                      <Icon.close/>
-                    </button>
+              </div>
+            );
+
+            return (
+              <div className="recipe-comments">
+                <div className="recipe-comments-header">
+                  <span className="recipe-comments-title">
+                    {comments.length === 0 ? "No comments yet" : `${comments.filter(c=>!c.parent_id).length} comment${topLevel.length !== 1 ? "s" : ""}`}
+                  </span>
+                </div>
+                <div className="comments-list">
+                  {topLevel.map(c => renderComment(c, false))}
+                </div>
+                {subscribed ? (
+                  <div className="comment-form-wrap" style={{position:"relative"}}>
+                    {gifPickerOpen && (
+                      <GifPicker
+                        onSelect={url => { setCommentGif(url); setGifPickerOpen(false); }}
+                        onClose={() => setGifPickerOpen(false)}
+                      />
+                    )}
+                    {(commentPhotoPreview || commentGif) && (
+                      <div className="comment-media-preview">
+                        <div className="comment-media-inner">
+                          <img src={commentGif || commentPhotoPreview} alt="Preview"/>
+                          <button type="button" className="comment-photo-remove" onClick={() => { setCommentPhoto(null); setCommentPhotoPreview(null); setCommentGif(null); if (commentPhotoRef.current) commentPhotoRef.current.value = ""; }}>
+                            <Icon.close/>
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                    <form className="comment-form" onSubmit={submitComment}>
+                      <div className="comment-input-row">
+                        <div className="comment-avatar sm">{userInitial}</div>
+                        <input
+                          className="comment-input"
+                          placeholder="Add a comment…"
+                          value={commentText}
+                          onChange={e => setCommentText(e.target.value)}
+                          maxLength={500}
+                        />
+                        <div className="comment-form-actions">
+                          <button type="button" className="comment-photo-btn" title="Add photo" onClick={() => commentPhotoRef.current.click()}>
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                          </button>
+                          <input ref={commentPhotoRef} type="file" accept="image/*" style={{display:"none"}} onChange={e => { const f = e.target.files[0]; if (f) { setCommentPhoto(f); setCommentPhotoPreview(URL.createObjectURL(f)); setCommentGif(null); } }}/>
+                          <button type="button" className="comment-gif-btn" title="Add GIF" onClick={() => { setGifPickerOpen(o => !o); }}>GIF</button>
+                          <button type="submit" className="comment-submit"
+                            disabled={(!commentText.trim() && !commentPhoto && !commentGif) || commentStatus === "submitting"}>
+                            {commentStatus === "submitting" ? "…" : "Post"}
+                          </button>
+                        </div>
+                      </div>
+                    </form>
                   </div>
+                ) : (
+                  <p className="comment-gate">
+                    <button className="comment-gate-link" onClick={() => { onClose(); setPage("subscribe"); }}>Subscribe</button> to join the conversation.
+                  </p>
                 )}
-                <div className="comment-input-row">
-                  <div className="comment-avatar sm">{userInitial}</div>
-                  <input
-                    className="comment-input"
-                    placeholder="Add a comment…"
-                    value={commentText}
-                    onChange={e => setCommentText(e.target.value)}
-                    maxLength={500}
-                  />
-                  <div className="comment-form-actions">
-                    <button type="button" className="comment-photo-btn" title="Add photo" onClick={() => commentPhotoRef.current.click()}>
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-                    </button>
-                    <input ref={commentPhotoRef} type="file" accept="image/*" style={{display:"none"}} onChange={e => { const f = e.target.files[0]; if (f) { setCommentPhoto(f); setCommentPhotoPreview(URL.createObjectURL(f)); } }}/>
-                    <button type="submit" className="comment-submit"
-                      disabled={(!commentText.trim() && !commentPhoto) || commentStatus === "submitting"}>
-                      {commentStatus === "submitting" ? "…" : "Post"}
-                    </button>
-                  </div>
-                </div>
-              </form>
-            ) : (
-              <p className="comment-gate">
-                <button className="comment-gate-link" onClick={() => { onClose(); setPage("subscribe"); }}>Subscribe</button> to join the conversation.
-              </p>
-            )}
-          </div>
+              </div>
+            );
+          })()}
         </div>
       </div>
     </div>
