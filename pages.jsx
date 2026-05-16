@@ -481,6 +481,7 @@ const RECIPES = [
     name: "Arugula Caesar with Pistachio-Panko Crunch",
     tags: ["Salads", "30 min"],
     serves: "2–4",
+    imgs: ["images/arugula-caesar-01.jpg", "images/arugula-caesar-02.jpg", "images/arugula-caesar-03.jpg", "images/arugula-caesar-04.jpg"],
     ingredients: [
       { section: "The Crunch" },
       { name: "Pistachios",             amount: "equal parts w/ panko",   img: "https://spoonacular.com/cdn/ingredients_100x100/pistachios.jpg" },
