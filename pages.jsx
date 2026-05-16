@@ -210,8 +210,29 @@ function HomePage({ setPage }) {
         </div>
       </section>
 
+      {/* Private Dinners */}
+      <section className="private-dinners-section">
+        <div className="container private-dinners-inner">
+          <div className="private-dinners-left">
+            <div className="eyebrow" style={{color:"var(--accent)"}}>
+              <span className="dot" style={{background:"var(--accent)"}}></span>Available for Hire
+            </div>
+            <h2 className="private-dinners-title">Private<br/>Dinners.</h2>
+            <p className="private-dinners-sub">I cook for people who care about the food on their table. Intimate dinners, special occasions, supper clubs — whatever the setting, I show up and make it unforgettable.</p>
+            <a href="#" onClick={go("contact")} className="btn" style={{background:"var(--cream)",color:"var(--ink)",borderColor:"var(--cream)"}}>
+              Book a Dinner <Icon.arrow className="arrow"/>
+            </a>
+          </div>
+          <div className="private-dinners-right">
+            <div className="private-dinners-stat"><span className="pd-num">NYC</span><span className="pd-lbl">Based</span></div>
+            <div className="private-dinners-stat"><span className="pd-num">∞</span><span className="pd-lbl">Menus</span></div>
+            <div className="private-dinners-stat"><span className="pd-num">2–20</span><span className="pd-lbl">Guests</span></div>
+            <div className="private-dinners-stat"><span className="pd-num">100%</span><span className="pd-lbl">Custom</span></div>
+          </div>
+        </div>
+      </section>
+
       {/* YouTube */}
-      <hr className="rule"/>
       <WatchSection/>
     </div>
   );
